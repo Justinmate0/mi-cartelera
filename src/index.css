@@ -213,3 +213,189 @@ body {
   .barra-usuario { padding: 0.75rem 1rem; }
   .grilla-titulos { grid-template-columns: repeat(2, 1fr); gap: 0.75rem; }
 }
+
+/* ---- Botones auxiliares ---- */
+.btn-en-lista {
+  background: transparent;
+  border: 1px solid #3a6b4a;
+  color: #7fd39b;
+}
+.btn-en-lista:disabled { opacity: 1; }
+.boton-texto {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--texto-suave);
+  text-decoration: underline;
+}
+.boton-texto:hover { color: var(--acento); }
+
+/* ---- Tarjetas de mi lista ---- */
+.boton-poster {
+  position: relative;
+  display: block;
+  padding: 0;
+  border: none;
+  background: none;
+  width: 100%;
+}
+.esquina-estado {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+/* ---- Badges de estado ---- */
+.badge-estado {
+  display: inline-block;
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+.badge-por-ver { background: #3b3550; color: #d9d2f5; }
+.badge-viendo  { background: var(--acento); color: #1a1400; }
+.badge-vista   { background: #1f5134; color: #b8f0cb; }
+
+/* ---- Estrellas ---- */
+.estrellas { display: inline-flex; gap: 0.1rem; font-size: 1rem; line-height: 1; }
+.estrellas .llena { color: var(--acento); }
+.estrellas .vacia { color: #4a4656; }
+.estrellas-editables button {
+  background: none;
+  border: none;
+  padding: 0 0.1rem;
+  font-size: 1.8rem;
+  line-height: 1;
+  transition: transform 0.1s ease;
+}
+.estrellas-editables button:hover { transform: scale(1.15); }
+.sin-calificar { color: var(--texto-suave); font-size: 0.8rem; }
+
+/* ---- Controles de la lista ---- */
+.contador-resumen { color: var(--texto-suave); margin-bottom: 1rem; }
+.contador-resumen strong { color: var(--texto); }
+
+.controles-lista {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin-bottom: 1.25rem;
+}
+.filtros { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.filtros button {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  color: var(--texto-suave);
+  border-radius: 999px;
+  padding: 0.3rem 0.85rem;
+  font-size: 0.85rem;
+}
+.filtros button:hover { color: var(--texto); border-color: var(--texto-suave); }
+.filtros button.activo {
+  background: var(--acento);
+  border-color: var(--acento);
+  color: #1a1400;
+  font-weight: 600;
+}
+.selector-orden {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+.selector-orden .form-select { width: auto; }
+
+.lista-vacia {
+  text-align: center;
+  padding: 4rem 1rem;
+}
+
+/* ---- Página de detalle ---- */
+.detalle-cabecera {
+  display: grid;
+  grid-template-columns: minmax(180px, 280px) 1fr;
+  gap: 2rem;
+  align-items: start;
+}
+.detalle-poster { border-radius: 12px; }
+.detalle-titulo {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(2.2rem, 5vw, 3.4rem);
+  letter-spacing: 0.03em;
+  line-height: 1;
+  margin-bottom: 0.75rem;
+}
+.detalle-tmdb { color: var(--texto-suave); }
+.nota-tmdb { color: var(--acento); font-weight: 600; margin-right: 0.25rem; }
+.lista-generos {
+  list-style: none;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-bottom: 1rem;
+}
+.lista-generos li {
+  border: 1px solid var(--borde);
+  border-radius: 999px;
+  padding: 0.15rem 0.7rem;
+  font-size: 0.8rem;
+  color: var(--texto-suave);
+}
+.subtitulo-detalle {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 1.6rem;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.5rem;
+}
+.detalle-sinopsis { line-height: 1.65; max-width: 70ch; }
+
+.panel-personal {
+  margin-top: 2rem;
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 16px;
+  padding: 1.5rem;
+  max-width: 720px;
+}
+.panel-personal .form-control {
+  background: var(--fondo);
+  border-color: var(--borde);
+  color: var(--texto);
+}
+
+.grilla-elenco {
+  list-style: none;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 1rem;
+}
+.actor img,
+.actor-sin-foto {
+  width: 100%;
+  aspect-ratio: 2 / 3;
+  object-fit: cover;
+  border-radius: 10px;
+  background: #23202b;
+}
+.actor-sin-foto {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: "Bebas Neue", sans-serif;
+  font-size: 2.5rem;
+  color: var(--texto-suave);
+}
+.actor-nombre { font-size: 0.85rem; font-weight: 600; margin: 0.4rem 0 0; }
+.actor-personaje { font-size: 0.75rem; color: var(--texto-suave); margin: 0; }
+
+@media (max-width: 768px) {
+  .detalle-cabecera { grid-template-columns: 1fr; }
+  .detalle-poster { max-width: 220px; }
+}
