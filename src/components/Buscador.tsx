@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import type { FormEvent } from "react";
 import type { ResultadoTmdb } from "../types/catalogo.ts";
+import { claveTitulo } from "../types/miLista.ts";
 import { buscarTitulos } from "../services/tmdbService.ts";
 import TarjetaResultado from "./TarjetaResultado.tsx";
 import EstadoError from "./EstadoError.tsx";
@@ -19,13 +20,20 @@ const validarConsulta = (texto: string): string | null => {
   return null;
 };
 
-const Buscador = () => {
+interface BuscadorProps {
+  clavesEnLista: Set<string>;
+  onAgregar: (resultado: ResultadoTmdb) => Promise<void>;
+}
+
+const Buscador = ({ clavesEnLista, onAgregar }: BuscadorProps) => {
   const [consulta, setConsulta] = useState("");
   const [estado, setEstado] = useState<EstadoBusqueda>("inicial");
   const [resultados, setResultados] = useState<ResultadoTmdb[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [errorValidacion, setErrorValidacion] = useState<string | null>(null);
   const [ultimaConsulta, setUltimaConsulta] = useState("");
+  const [agregando, setAgregando] = useState<Set<string>>(new Set());
+  const [avisoAgregar, setAvisoAgregar] = useState<string | null>(null);
 
   // Guarda el controlador de la búsqueda en curso para cancelarla si llega otra.
   const controladorRef = useRef<AbortController | null>(null);
@@ -54,6 +62,25 @@ const Buscador = () => {
             : "Ocurrió un error inesperado."
       );
       setEstado("error");
+    }
+  };
+
+  const manejarAgregar = async (resultado: ResultadoTmdb) => {
+    const clave = claveTitulo(resultado.tipo, resultado.tmdbId);
+    setAvisoAgregar(null);
+    setAgregando((actuales) => new Set(actuales).add(clave));
+    try {
+      await onAgregar(resultado);
+    } catch (err) {
+      setAvisoAgregar(
+        `No se pudo agregar "${resultado.titulo}": ${err instanceof Error ? err.message : "error desconocido."}`
+      );
+    } finally {
+      setAgregando((actuales) => {
+        const copia = new Set(actuales);
+        copia.delete(clave);
+        return copia;
+      });
     }
   };
 
@@ -111,13 +138,23 @@ const Buscador = () => {
 
         {estado === "exito" && resultados.length > 0 && (
           <>
+            {avisoAgregar && <div className="alert alert-danger py-2">{avisoAgregar}</div>}
             <p className="text-secondary mb-3">
               {resultados.length} resultado{resultados.length === 1 ? "" : "s"} para "{ultimaConsulta}"
             </p>
             <div className="grilla-titulos">
-              {resultados.map((resultado) => (
-                <TarjetaResultado key={`${resultado.tipo}-${resultado.tmdbId}`} resultado={resultado} />
-              ))}
+              {resultados.map((resultado) => {
+                const clave = claveTitulo(resultado.tipo, resultado.tmdbId);
+                return (
+                  <TarjetaResultado
+                    key={clave}
+                    resultado={resultado}
+                    yaEnLista={clavesEnLista.has(clave)}
+                    agregando={agregando.has(clave)}
+                    onAgregar={manejarAgregar}
+                  />
+                );
+              })}
             </div>
           </>
         )}
