@@ -1,4 +1,5 @@
 import type { Actor, DetalleTmdb, ResultadoTmdb, TipoContenido } from "../types/catalogo.ts";
+import type { DuracionConsultada } from "../dominio/nocheDePelicula.ts";
 
 const API_URL = "https://api.themoviedb.org/3";
 const IMAGEN_URL = "https://image.tmdb.org/t/p";
@@ -141,4 +142,68 @@ export const obtenerDetalle = async (
     duracion,
     elenco,
   };
+};
+
+// ---- Noche de película (E2, ticket NP-04) ----
+
+interface DuracionCruda {
+  runtime?: number | null;
+}
+
+// Cuántas consultas a TMDB salen a la vez (riesgo R-01: límite de peticiones de TMDB).
+const CONSULTAS_A_LA_VEZ = 4;
+
+const esCancelacion = (error: unknown): boolean =>
+  error instanceof DOMException && error.name === "AbortError";
+
+/**
+ * obtenerDuraciones — consulta la duración (runtime) de cada película en TMDB.
+ * Devuelve, por id, "conocida" con los minutos, "desconocida" si TMDB no la tiene (null o 0)
+ * o "error" si esa consulta falló. Si fallan todas, lanza el primer error.
+ */
+export const obtenerDuraciones = async (
+  tmdbIds: readonly number[],
+  senal?: AbortSignal
+): Promise<Map<number, DuracionConsultada>> => {
+  const resultado = new Map<number, DuracionConsultada>();
+  const pendientes = [...new Set(tmdbIds)];
+  let primerError: unknown = null;
+  let fallidas = 0;
+
+  const consultar = async (tmdbId: number) => {
+    try {
+      const datos = await pedirTmdb<DuracionCruda>(
+        `/movie/${tmdbId}?${new URLSearchParams({ language: IDIOMA })}`,
+        senal
+      );
+      resultado.set(
+        tmdbId,
+        datos.runtime && datos.runtime > 0
+          ? { estado: "conocida", minutos: datos.runtime }
+          : { estado: "desconocida" }
+      );
+    } catch (error) {
+      if (esCancelacion(error)) throw error;
+      primerError ??= error;
+      fallidas += 1;
+      resultado.set(tmdbId, { estado: "error" });
+    }
+  };
+
+  // Cada "trabajador" toma el siguiente id de la cola hasta que se vacía.
+  const trabajadores = Array.from({ length: Math.min(CONSULTAS_A_LA_VEZ, pendientes.length) }, async () => {
+    for (let id = pendientes.shift(); id !== undefined; id = pendientes.shift()) {
+      await consultar(id);
+    }
+  });
+  await Promise.all(trabajadores);
+
+  if (resultado.size > 0 && fallidas === resultado.size) {
+    if (primerError instanceof TypeError)
+      throw new Error("No se pudo conectar con TMDB. Revisa tu conexión a internet.");
+    throw primerError instanceof Error
+      ? primerError
+      : new Error("No se pudieron consultar las duraciones en TMDB.");
+  }
+  return resultado;
 };
