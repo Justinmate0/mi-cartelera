@@ -1,14 +1,18 @@
 import { useMemo, useState } from "react";
 import type { ItemLista } from "../types/miLista.ts";
-import type { PeliculaPorVer } from "../dominio/nocheDePelicula.ts";
+import type { PeliculaConDuracion, PeliculaPorVer, ResultadoAgregar } from "../dominio/nocheDePelicula.ts";
 import {
   MENSAJES_TIEMPO,
+  PAUSA_ENTRE_PELICULAS,
   clasificarCandidatas,
+  mensajeNoAgregada,
+  puedeAgregar,
   validarTiempoDisponible,
 } from "../dominio/nocheDePelicula.ts";
 import { useDuraciones } from "../hooks/useDuraciones.ts";
 import FormularioTiempo from "./FormularioTiempo.tsx";
 import ListaCandidatas from "./ListaCandidatas.tsx";
+import PanelSesion from "./PanelSesion.tsx";
 import EstadoError from "./EstadoError.tsx";
 
 interface NocheDePeliculaProps {
@@ -30,6 +34,9 @@ const NocheDePelicula = ({
 }: NocheDePeliculaProps) => {
   const [tiempo, setTiempo] = useState<number | null>(null);
   const [errorTiempo, setErrorTiempo] = useState<string | null>(null);
+  // Sesión armada, en el orden en que se agregaron las películas (CA-2.2.9).
+  const [sesion, setSesion] = useState<PeliculaConDuracion[]>([]);
+  const [avisoAgregar, setAvisoAgregar] = useState<{ tmdbId: number; texto: string } | null>(null);
 
   const ids = useMemo(() => peliculasPorVer.map((item) => item.tmdb_id), [peliculasPorVer]);
   const { estado, duraciones, error, reintentar } = useDuraciones(ids);
@@ -50,7 +57,36 @@ const NocheDePelicula = ({
     [candidatas, tiempo]
   );
 
+  const idsEnSesion = useMemo(() => new Set(sesion.map((pelicula) => pelicula.tmdbId)), [sesion]);
+
+  // Para cada candidata, el dominio dice si cabe en lo que queda (R2.12).
+  const evaluaciones = useMemo(() => {
+    const mapa = new Map<number, ResultadoAgregar>();
+    if (tiempo === null || !clasificacion) return mapa;
+    for (const pelicula of clasificacion.caben) {
+      mapa.set(pelicula.tmdbId, puedeAgregar(tiempo, sesion, pelicula, PAUSA_ENTRE_PELICULAS));
+    }
+    return mapa;
+  }, [clasificacion, sesion, tiempo]);
+
+  const agregar = (pelicula: PeliculaConDuracion) => {
+    if (tiempo === null) return;
+    const resultado = puedeAgregar(tiempo, sesion, pelicula, PAUSA_ENTRE_PELICULAS);
+    if (resultado.ok) {
+      setSesion((actual) => [...actual, pelicula]);
+      setAvisoAgregar(null);
+    } else {
+      setAvisoAgregar({ tmdbId: pelicula.tmdbId, texto: mensajeNoAgregada(resultado) });
+    }
+  };
+
+  const quitar = (tmdbId: number) => {
+    setSesion((actual) => actual.filter((pelicula) => pelicula.tmdbId !== tmdbId));
+    setAvisoAgregar(null);
+  };
+
   const confirmarTiempo = (texto: string) => {
+    setAvisoAgregar(null);
     const resultado = validarTiempoDisponible(texto);
     if (resultado.valido) {
       setTiempo(resultado.minutos);
@@ -105,12 +141,22 @@ const NocheDePelicula = ({
           )}
 
           {estado === "listo" && clasificacion && tiempo !== null && (
-            <ListaCandidatas clasificacion={clasificacion} tiempo={tiempo} />
+            <ListaCandidatas
+              clasificacion={clasificacion}
+              tiempo={tiempo}
+              idsEnSesion={idsEnSesion}
+              evaluaciones={evaluaciones}
+              aviso={avisoAgregar}
+              onAgregar={agregar}
+            />
           )}
 
           {estado === "listo" && tiempo === null && !errorTiempo && (
             <p className="text-secondary my-4">Escribe tu tiempo libre para ver qué películas caben.</p>
           )}
+        </div>
+        <div className="col-lg-4">
+          <PanelSesion sesion={sesion} tiempo={tiempo} onQuitar={quitar} />
         </div>
       </div>
     );

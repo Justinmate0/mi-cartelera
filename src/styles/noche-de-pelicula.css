@@ -71,3 +71,60 @@
   color: var(--texto-suave);
   font-size: 0.9rem;
 }
+
+/* ---- Agregar a la sesión ---- */
+.nota-no-cabe {
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  margin: 0.4rem 0 0;
+}
+.aviso-no-agregada {
+  color: var(--peligro);
+  font-size: 0.8rem;
+  margin: 0.4rem 0 0;
+}
+
+/* ---- Panel de sesión y barra de tiempo (DESIGN.md §6.12 y §6.9) ---- */
+.panel-sesion {
+  margin-top: 0;
+  max-width: none;
+}
+@media (min-width: 992px) {
+  .panel-sesion {
+    position: sticky;
+    top: 5rem;
+  }
+}
+.lista-sesion {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 1rem;
+}
+.fila-pelicula {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  padding: 0.4rem 0;
+}
+.nombre-en-sesion {
+  flex: 1;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.fila-pausa {
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  margin: 0;
+  padding: 0.15rem 0 0.15rem 0.75rem;
+  border-left: 2px dashed var(--borde);
+}
+.barra-tiempo .progress {
+  background: var(--superficie-alta);
+  height: 0.6rem;
+}
+.barra-tiempo .barra-ok {
+  background: var(--acento);
+}
+.barra-tiempo .barra-excede {
+  background: var(--peligro);
+}
