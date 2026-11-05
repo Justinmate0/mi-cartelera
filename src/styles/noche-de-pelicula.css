@@ -193,3 +193,21 @@
   font-size: 0.8rem;
   font-weight: 400;
 }
+
+/* ---- Barra con tres secciones (NP-06) ----
+   Con «Noche de película» la navegación ya no entra al lado de la marca en un celular:
+   pasa a su propia línea en vez de partir la marca y las píldoras. */
+.marca,
+.navegacion button {
+  white-space: nowrap;
+}
+.grupo-navegacion {
+  flex-wrap: wrap;
+  row-gap: 0.5rem;
+}
+
+/* El botón principal solo cambiaba de tono con el teclado: ahora muestra un anillo de foco (D-08). */
+.btn.btn-acento:focus-visible {
+  outline: 2px solid var(--texto);
+  outline-offset: 2px;
+}

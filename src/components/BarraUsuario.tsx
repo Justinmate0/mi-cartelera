@@ -11,7 +11,7 @@ interface BarraUsuarioProps {
 // visible en todas las pantallas privadas de la app.
 const BarraUsuario = ({ email, seccionActiva, onCambiarSeccion, onCerrarSesion }: BarraUsuarioProps) => (
   <header className="barra-usuario">
-    <div className="d-flex align-items-center gap-4">
+    <div className="grupo-navegacion d-flex align-items-center gap-4">
       <span className="marca">Mi Cartelera</span>
       <nav className="navegacion" aria-label="Secciones">
         <button
