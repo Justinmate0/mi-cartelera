@@ -47,6 +47,16 @@ Nueva sección **Noche de película**: dices cuántos minutos tienes libres y la
 - **Duraciones:** se piden a TMDB (`/movie/{id}`, máximo 4 a la vez). Si TMDB no tiene la duración, la película sale como «no disponible» con su motivo.
 - **Datos:** tablas `sesiones` y `sesion_peliculas` con RLS (cada cuenta ve y borra solo lo suyo) y la función `guardar_sesion`, que vuelve a validar todo en la base. Migración en [`supabase/migraciones/002_noche_de_pelicula.sql`](supabase/migraciones/002_noche_de_pelicula.sql).
 
+![Noche de película](docs/capturas/09-noche-de-pelicula.png)
+
+| Llenar mi noche | Ya no está en tu lista |
+|---|---|
+| ![Llenar mi noche](docs/capturas/10-llenar-mi-noche.png) | ![Sesión guardada con una película quitada de Mi lista](docs/capturas/11-ya-no-esta-en-tu-lista.png) |
+
+**Seguridad con dos cuentas:** la cuenta de la izquierda ve su sesión guardada; la de la derecha, en incógnito, no ve nada (captura 08). La prueba SQL con dos usuarios está en la captura 07.
+
+![Dos cuentas: cada una ve solo sus sesiones](docs/capturas/08-sesiones-dos-cuentas.png)
+
 ### Documentos de la épica
 
 | Documento | Qué tiene |
