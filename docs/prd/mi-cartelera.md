@@ -1,6 +1,6 @@
 # // PRD · Mi Cartelera Personal
 
-Versión 2.0 · noviembre 2026 · Justin Peñafiel
+Versión 2.1 (después del refinamiento) · noviembre 2026 · Justin Peñafiel
 
 Este documento describe el producto completo en lenguaje de producto. E1 es lo que ya está construido (Proyecto 3). E2, «Noche de película», es lo nuevo. Cómo se construye cada cosa vive en `docs/specs/`.
 
@@ -36,12 +36,11 @@ Pero tener la lista no basta. La persona tiene muchas películas «por ver» y, 
 
 ### E2 · Noche de película (nueva)
 
-- **H2.1 Decir cuánto tiempo tengo:** indicar los minutos libres.
-- **H2.2 Ver qué cabe:** ver qué películas «por ver» caben en ese tiempo, cada una con su duración, y cuáles no se pueden usar y por qué.
-- **H2.3 Armar la sesión:** agregar y quitar películas, viendo siempre cuánto dura la sesión y cuánto tiempo queda.
-- **H2.4 Guardar la sesión:** guardarla para esa noche, con un nombre si se quiere.
-- **H2.5 Consultar mis sesiones:** ver las sesiones guardadas con su detalle y borrar las que ya no sirven.
-- **H2.6 Llenar mi noche (opcional):** pedir que la app proponga una combinación que aproveche al máximo el tiempo.
+- **H2.1 Ver qué cabe en mi tiempo libre:** decir los minutos libres y ver qué películas «por ver» caben, cada una con su duración, y cuáles no se pueden usar y por qué.
+- **H2.2 Armar la sesión:** agregar y quitar películas, viendo siempre cuánto dura la sesión y cuánto tiempo queda.
+- **H2.3 Guardar la sesión:** guardarla para esa noche, con un nombre si se quiere.
+- **H2.4 Consultar mis sesiones:** ver las sesiones guardadas con su detalle y borrar las que ya no sirven.
+- **H2.5 Llenar mi noche (opcional):** pedir que la app proponga una combinación que aproveche al máximo el tiempo.
 
 ## // 5. No-alcance
 
@@ -78,6 +77,18 @@ Pero tener la lista no basta. La persona tiene muchas películas «por ver» y, 
 - **R2.9 Una sesión guardada no se modifica; se puede borrar y armar otra.** Armar una sesión toma segundos, así que editarla no ahorra trabajo, y una sesión que no cambia es un registro claro de lo que se planeó. [SUPUESTO: si las personas piden editar, se considera en una versión siguiente.]
 - **R2.10 Si la persona quita de su lista una película que está en una sesión guardada, la sesión se queda como estaba,** con el título y la duración que tenía al guardarse, y la película se marca como «ya no está en tu lista». La sesión es un plan del pasado; borrarla o cambiarla en silencio haría que la persona pierda un plan sin saberlo.
 - **R2.11 Una sesión tiene un nombre opcional, de hasta 60 caracteres, y siempre la fecha y hora en que se guardó.** Sin nombre, se muestra con su fecha. El nombre ayuda a distinguir planes («Viernes de terror»); la fecha sirve de orden y de nombre de respaldo.
+
+### E2 · Reglas que salen del refinamiento
+
+Vienen de los casos borde aceptados en `docs/backlog/E2-refinamiento.md`.
+
+- **R2.12** Una película se puede agregar a la sesión solo si cabe en el tiempo que queda, contando la pausa que trae con ella si no es la primera.
+- **R2.13** Una sesión necesita al menos una película para guardarse.
+- **R2.14** Si la persona cambia el tiempo disponible y la sesión armada ya no cabe, la app lo dice y no deja guardar hasta que vuelva a caber.
+- **R2.15** Una sesión que no cumple las reglas R2.1 a R2.4, o con películas que no están «por ver» en la lista de la persona, nunca queda guardada, aunque alguien intente saltarse la pantalla.
+- **R2.16** Las películas que duran más que todo el tiempo disponible no aparecen entre las que caben; la app dice cuántas son.
+- **R2.17** Si no se pudo consultar la duración de una película, aparece como no disponible con ese motivo, distinto de «sin duración».
+- **R2.18** Cada persona solo ve y borra sus propias sesiones.
 
 ## // 7. Supuestos
 
