@@ -39,6 +39,7 @@ Este archivo dice cómo se **ve** la app. No define funcionalidad: qué hace la 
 | Botones        | `btn`, `btn-sm`, `btn-outline-light`, `btn-outline-danger`                                                   |
 | Formularios    | `form-control`, `form-select`, `form-select-sm`, `form-label`, `form-text`, `is-invalid`, `invalid-feedback` |
 | Avisos y carga | `alert`, `alert-danger`, `alert-success`, `spinner-border`, `spinner-border-sm`, `text-warning`              |
+| Progreso       | `progress`, `progress-bar` (solo CSS; el ancho del relleno es la única excepción a los estilos en línea)     |
 | Texto          | `text-secondary`, `text-center`, `fw-semibold`, `small`, `visually-hidden`                                   |
 
 ## // 4. Tokens
@@ -163,6 +164,48 @@ Mientras una acción se envía, el botón se deshabilita y cambia su texto («Gu
 | Error               | `EstadoError`: caja `estado-error` (`--peligro-fondo`, `--peligro-borde`) con `role="alert"` y botón «Reintentar» |
 | Vacío               | `lista-vacia`: título, una frase de ayuda y un botón principal que lleva a donde se resuelve                      |
 | Aviso de una acción | `alert alert-danger py-2` o `alert alert-success py-2`, debajo del bloque que lo produjo                          |
+
+### 6.9 Barra de tiempo (E2)
+
+Muestra cuánto del tiempo disponible ocupa la sesión.
+
+- `progress` de Bootstrap con fondo `--superficie-alta` y relleno `--acento`. Si la sesión no cabe, el relleno pasa a `--peligro` y ocupa todo el ancho.
+- Debajo, en una línea con la clase `cifra`: «Ocupa 3 h 31 min de 4 h · Quedan 29 min». Si hay pausas: «incluye 1 pausa de 10 min», en `--texto-suave`.
+- Accesibilidad: `role="progressbar"` con `aria-valuemin="0"`, `aria-valuemax` igual al tiempo disponible, `aria-valuenow` igual a lo que ocupa y `aria-label="Tiempo de la sesión"`. El texto de abajo dice lo mismo, así que el color nunca es la única señal.
+
+### 6.10 Tarjeta de candidata (E2)
+
+Variante de la Tarjeta de título (6.3) para las películas que caben.
+
+- Póster, título y la duración en el lugar del metadato, con la clase `cifra`.
+- Acción: botón secundario `btn-sm` «Agregar». Si ya está en la sesión, el botón «Ya hecho» con «✓ En la sesión».
+- Si no cabe en lo que queda, debajo del botón se lee «No cabe en lo que queda» en `--texto-suave`. El botón sigue activo para que, al presionarlo, el aviso explique cuánto necesita.
+- No lleva insignia de estado: todas son «por ver».
+
+### 6.11 Lista de no disponibles (E2)
+
+Lista simple debajo de las candidatas, con el subtítulo «No disponibles». Cada fila: título en `--texto` y su motivo en `--texto-suave`. Sin póster ni botón, porque no se pueden agregar.
+
+### 6.12 Panel de sesión (E2)
+
+Usa el Panel (6.7). A 992px o más va en la columna derecha (`col-lg-4`) y se queda visible al bajar (`position: sticky`). Orden fijo de arriba abajo:
+
+1. Subtítulo «Tu sesión» en el estilo de `subtitulo-detalle`.
+2. Lista ordenada (`ol`) de películas: título, duración en `cifra` y botón de texto «Quitar». Entre dos películas, una fila «Pausa · 10 min» en `--texto-suave`.
+3. Barra de tiempo (6.9).
+4. Campo de formulario (6.6) «Nombre (opcional)».
+5. Botón principal «Guardar sesión» y botón secundario «Llenar mi noche», con los avisos debajo.
+
+Vacío: «Agrega películas de la lista para armar tu noche.» en `--texto-suave`.
+
+### 6.13 Tarjeta de sesión guardada (E2)
+
+Una sesión guardada en «Mis sesiones», hecha con `details` y `summary` nativos (sin JavaScript de Bootstrap).
+
+- Cerrada: nombre o «Noche del …» en peso 600, y debajo, en `cifra` y `--texto-suave`: «2 películas · 3 h 31 min de 4 h · guardada el 7 de noviembre».
+- Abierta: la misma lista ordenada del Panel de sesión, sin «Quitar». Una película que ya no está en la lista lleva el texto «Ya no está en tu lista».
+- Acción: botón destructivo `btn-sm` «Borrar sesión», con confirmación.
+- Fondo `--superficie`, `--borde`, radio 12px. El foco del `summary` es visible.
 
 ## // 7. Accesibilidad
 
