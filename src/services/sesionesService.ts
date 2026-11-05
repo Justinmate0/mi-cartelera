@@ -23,6 +23,10 @@ interface SesionCruda {
 // Convierte los errores de PostgreSQL en mensajes en español.
 // guardar_sesion ya lanza sus propios mensajes (códigos 22023 y 23514).
 const traducirError = (error: PostgrestError): string => {
+  // Sin internet, supabase-js no lanza: devuelve un error con el mensaje en inglés del navegador.
+  if (/failed to fetch|networkerror|load failed/i.test(error.message)) {
+    return "No se pudo conectar con Supabase. Revisa tu internet e intenta otra vez.";
+  }
   switch (error.code) {
     case "42501":
       return "No tienes permiso para hacer esto.";
