@@ -399,21 +399,23 @@ V-xx son las filas de `docs/VERIFICACION.md`.
 
 ## // 8. Tabla ticket → archivos
 
-| Ticket | Archivos                                                                                                                                                                            |
-| ------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| NP-01  | `package.json`, `package-lock.json`, `vite.config.ts`, `tsconfig.app.json`                                                                                                          |
-| NP-02  | `src/dominio/nocheDePelicula.ts`, `src/dominio/nocheDePelicula.test.ts`                                                                                                             |
-| NP-03  | `supabase/migraciones/002_noche_de_pelicula.sql`                                                                                                                                    |
-| NP-04  | `src/services/tmdbService.ts`                                                                                                                                                       |
-| NP-05  | `src/services/sesionesService.ts`, `src/types/sesion.ts`                                                                                                                            |
-| NP-06  | `src/index.css` (solo `:root`), `src/styles/noche-de-pelicula.css`, `src/main.tsx`, `src/components/BarraUsuario.tsx`, `src/App.tsx`, `src/components/NocheDePelicula.tsx`          |
-| NP-07  | `src/hooks/useDuraciones.ts`, `src/components/NocheDePelicula.tsx`, `src/components/FormularioTiempo.tsx`, `src/components/ListaCandidatas.tsx`, `src/styles/noche-de-pelicula.css` |
-| NP-08  | `src/components/NocheDePelicula.tsx`, `src/components/ListaCandidatas.tsx`, `src/components/PanelSesion.tsx`, `src/styles/noche-de-pelicula.css`                                    |
-| NP-09  | `src/components/NocheDePelicula.tsx`, `src/components/PanelSesion.tsx`                                                                                                              |
-| NP-10  | `src/components/MisSesiones.tsx`, `src/components/NocheDePelicula.tsx`, `src/styles/noche-de-pelicula.css`                                                                          |
-| NP-11  | `src/dominio/nocheDePelicula.ts`, `src/dominio/nocheDePelicula.test.ts`, `src/components/PanelSesion.tsx`, `src/components/NocheDePelicula.tsx`                                     |
-| NP-12  | `docs/VERIFICACION.md`                                                                                                                                                              |
-| NP-13  | `docs/AUDITORIA.md`, `README.md`, `docs/backlog/E2-tickets.md`                                                                                                                      |
+| Ticket | Archivos                                                                                                                                                                                           |
+| ------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| NP-01  | `package.json`, `package-lock.json`, `vite.config.ts`                                                                                                                                              |
+| NP-02  | `src/dominio/nocheDePelicula.ts`, `src/dominio/nocheDePelicula.test.ts`                                                                                                                            |
+| NP-03  | `supabase/migraciones/002_noche_de_pelicula.sql`, `supabase/pruebas/rls_noche_de_pelicula.sql`                                                                                                     |
+| NP-04  | `src/services/tmdbService.ts`, `src/services/tmdbService.test.ts`                                                                                                                                  |
+| NP-05  | `src/services/sesionesService.ts`, `src/types/sesion.ts`                                                                                                                                           |
+| NP-06  | `src/index.css` (solo `:root`), `src/styles/noche-de-pelicula.css`, `src/main.tsx`, `src/components/BarraUsuario.tsx`, `src/App.tsx`, `src/components/NocheDePelicula.tsx`                         |
+| NP-07  | `src/App.tsx`, `src/hooks/useDuraciones.ts`, `src/components/NocheDePelicula.tsx`, `src/components/FormularioTiempo.tsx`, `src/components/ListaCandidatas.tsx`, `src/styles/noche-de-pelicula.css` |
+| NP-08  | `src/components/NocheDePelicula.tsx`, `src/components/ListaCandidatas.tsx`, `src/components/PanelSesion.tsx`, `src/styles/noche-de-pelicula.css`                                                   |
+| NP-09  | `src/components/NocheDePelicula.tsx`, `src/components/PanelSesion.tsx`                                                                                                                             |
+| NP-10  | `src/App.tsx`, `src/components/MisSesiones.tsx`, `src/components/NocheDePelicula.tsx`, `src/styles/noche-de-pelicula.css`                                                                          |
+| NP-11  | `src/dominio/nocheDePelicula.ts`, `src/dominio/nocheDePelicula.test.ts`, `src/components/PanelSesion.tsx`, `src/components/NocheDePelicula.tsx`                                                    |
+| NP-12  | `docs/VERIFICACION.md`                                                                                                                                                                             |
+| NP-13  | `docs/AUDITORIA.md`, `README.md`, `docs/backlog/E2-tickets.md`, esta tabla                                                                                                                         |
+
+Tabla ajustada después de implementar para que diga lo que de verdad tocó cada commit (hallazgo 7 de `docs/AUDITORIA.md`). Además hubo dos arreglos: `fix(NP-05)` en `sesionesService.ts` y `fix(NP-06)` en `BarraUsuario.tsx` y `noche-de-pelicula.css`.
 
 Ningún ticket de interfaz (NP-06 a NP-10) toca `src/dominio/`, `src/services/` ni `supabase/`. NP-11 toca el dominio porque agrega una regla nueva, con sus tests.
 
