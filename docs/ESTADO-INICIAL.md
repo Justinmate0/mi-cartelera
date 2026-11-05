@@ -77,7 +77,7 @@ Se registra aquí y no se corrige en esta épica, salvo que un ticket lo diga.
 
 Lo que confirmé o corregí después de leer el informe del agente:
 
-- [ ] Leí el informe completo.
-- [ ] Lo que hace la app (sección 1) coincide con lo que veo al usarla.
-- [ ] Las inconsistencias y la deuda están bien descritas.
-- Correcciones: _(escribe aquí lo que cambiaste o «ninguna»)_
+- [x] Leí el informe completo.
+- [x] Lo que hace la app (sección 1) coincide con lo que veo al usarla.
+- [x] Las inconsistencias y la deuda están bien descritas.
+- Correcciones: ninguna. Revisado el 5 de noviembre de 2026.
