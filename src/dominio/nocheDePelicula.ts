@@ -164,6 +164,69 @@ export const clasificarCandidatas = (
   return { caben: caben.sort(ordenarPorDuracion), muyLargas, noDisponibles };
 };
 
+// ---- Llenar mi noche (H2.5) ----
+
+// R2.18: arma la sesión que ocupa más tiempo sin pasarse. Con el mismo tiempo ocupado, gana la de menos
+// películas; si siguen empatadas, la que usa las primeras de la lista (el orden de clasificarCandidatas).
+// Mochila 0/1: cada película pesa su duración + una pausa, y la capacidad es el tiempo + una pausa,
+// así las n − 1 pausas salen solas.
+export const llenarMiNoche = (
+  candidatas: readonly PeliculaConDuracion[],
+  tiempoDisponible: number,
+  pausa: number
+): PeliculaConDuracion[] => {
+  if (!esTiempoValido(tiempoDisponible)) return [];
+  const peliculas = candidatas.filter(
+    (pelicula, indice) =>
+      esDuracionValida(pelicula.duracion) &&
+      candidatas.findIndex((otra) => otra.tmdbId === pelicula.tmdbId) === indice
+  );
+  const capacidad = tiempoDisponible + pausa;
+  const n = peliculas.length;
+
+  // menos[i][w]: menor cantidad de películas, desde la i hasta el final, que pesan exactamente w.
+  const menos: number[][] = Array.from({ length: n + 1 }, () =>
+    new Array<number>(capacidad + 1).fill(Infinity)
+  );
+  menos[n][0] = 0;
+  for (let i = n - 1; i >= 0; i--) {
+    const peso = peliculas[i].duracion + pausa;
+    for (let w = 0; w <= capacidad; w++) {
+      const sin = menos[i + 1][w];
+      const con = w >= peso ? menos[i + 1][w - peso] + 1 : Infinity;
+      menos[i][w] = Math.min(sin, con);
+    }
+  }
+
+  let objetivo = capacidad;
+  while (objetivo > 0 && menos[0][objetivo] === Infinity) objetivo--;
+  if (objetivo === 0) return [];
+
+  const elegidas: PeliculaConDuracion[] = [];
+  let restante = objetivo;
+  for (let i = 0; i < n && restante > 0; i++) {
+    const peso = peliculas[i].duracion + pausa;
+    const faltan = menos[i][restante];
+    if (restante >= peso && menos[i + 1][restante - peso] === faltan - 1) {
+      elegidas.push(peliculas[i]);
+      restante -= peso;
+    }
+  }
+  return elegidas;
+};
+
+export const mensajeLlenarMiNoche = (propuesta: readonly PeliculaConDuracion[], pausa: number): string => {
+  if (propuesta.length === 0) return "Ninguna película cabe en ese tiempo.";
+  const total = formatearDuracion(
+    duracionSesion(
+      propuesta.map((pelicula) => pelicula.duracion),
+      pausa
+    )
+  );
+  const palabra = propuesta.length === 1 ? "película" : "películas";
+  return `Se armó una sesión de ${propuesta.length} ${palabra} que ocupa ${total}.`;
+};
+
 // ---- Nombre de la sesión ----
 
 export const validarNombreSesion = (texto: string): ResultadoNombre => {

@@ -5,6 +5,8 @@ import {
   MENSAJES_TIEMPO,
   PAUSA_ENTRE_PELICULAS,
   clasificarCandidatas,
+  llenarMiNoche,
+  mensajeLlenarMiNoche,
   mensajeNoAgregada,
   puedeAgregar,
   validarTiempoDisponible,
@@ -14,6 +16,7 @@ import { guardarSesion } from "../services/sesionesService.ts";
 import FormularioTiempo from "./FormularioTiempo.tsx";
 import ListaCandidatas from "./ListaCandidatas.tsx";
 import PanelSesion from "./PanelSesion.tsx";
+import type { AvisoPanel } from "./PanelSesion.tsx";
 import MisSesiones from "./MisSesiones.tsx";
 import EstadoError from "./EstadoError.tsx";
 
@@ -42,7 +45,7 @@ const NocheDePelicula = ({
   const [sesion, setSesion] = useState<PeliculaConDuracion[]>([]);
   const [avisoAgregar, setAvisoAgregar] = useState<{ tmdbId: number; texto: string } | null>(null);
   const [guardando, setGuardando] = useState(false);
-  const [avisoPanel, setAvisoPanel] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null);
+  const [avisoPanel, setAvisoPanel] = useState<AvisoPanel | null>(null);
   // Cambia cada vez que se guarda una sesión, para que «Mis sesiones» se recargue.
   const [versionSesiones, setVersionSesiones] = useState(0);
 
@@ -120,6 +123,19 @@ const NocheDePelicula = ({
     } finally {
       setGuardando(false);
     }
+  };
+
+  // H2.5: el dominio arma la mejor combinación y reemplaza la sesión (CA-2.5.3).
+  // Si ninguna cabe, la sesión no cambia (CA-2.5.4).
+  const llenar = () => {
+    if (tiempo === null || !clasificacion) return;
+    const propuesta = llenarMiNoche(clasificacion.caben, tiempo, PAUSA_ENTRE_PELICULAS);
+    if (propuesta.length > 0) setSesion(propuesta);
+    setAvisoAgregar(null);
+    setAvisoPanel({
+      tipo: propuesta.length > 0 ? "exito" : "info",
+      texto: mensajeLlenarMiNoche(propuesta, PAUSA_ENTRE_PELICULAS),
+    });
   };
 
   const quitar = (tmdbId: number) => {
@@ -204,6 +220,7 @@ const NocheDePelicula = ({
             tiempo={tiempo}
             onQuitar={quitar}
             onGuardar={guardar}
+            onLlenar={estado === "listo" && tiempo !== null ? llenar : null}
             guardando={guardando}
             aviso={avisoPanel}
           />

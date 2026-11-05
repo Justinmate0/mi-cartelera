@@ -8,6 +8,8 @@ import {
   duracionSesion,
   esTiempoValido,
   formatearDuracion,
+  llenarMiNoche,
+  mensajeLlenarMiNoche,
   mensajeExcede,
   mensajeNoAgregada,
   puedeAgregar,
@@ -300,5 +302,93 @@ describe("textos", () => {
     expect(mensajeExcede(211, 200)).toBe(
       "Tu sesión dura 3 h 31 min y tienes 3 h 20 min. Quita películas para que quepa."
     );
+  });
+});
+
+describe("llenarMiNoche (H2.5)", () => {
+  const ordenadas = clasificarCandidatas(listaEjemplo, 240).caben;
+
+  it("con 240 minutos propone Up y Her, que dejan solo 8 libres (CA-2.5.1)", () => {
+    const propuesta = llenarMiNoche(ordenadas, 240, PAUSA_ENTRE_PELICULAS);
+    expect(propuesta.map((p) => p.titulo)).toEqual(["Up", "Her"]);
+    expect(
+      cabeEnTiempo(
+        240,
+        propuesta.map((p) => p.duracion),
+        PAUSA_ENTRE_PELICULAS
+      )
+    ).toEqual({
+      cabe: true,
+      total: 232,
+      restante: 8,
+    });
+  });
+
+  it("con el mismo tiempo ocupado elige la de menos películas (CA-2.5.2)", () => {
+    const a = { ...up, tmdbId: 1, titulo: "A", duracion: 45 };
+    const b = { ...up, tmdbId: 2, titulo: "B", duracion: 45 };
+    const c = { ...up, tmdbId: 3, titulo: "C", duracion: 100 };
+    // A + pausa + B = 100 y C sola = 100: gana C, con menos películas.
+    expect(llenarMiNoche([a, b, c], 100, PAUSA_ENTRE_PELICULAS).map((p) => p.titulo)).toEqual(["C"]);
+  });
+
+  it("si ninguna cabe devuelve una sesión vacía (CA-2.5.4)", () => {
+    expect(llenarMiNoche([dune, her], 60, PAUSA_ENTRE_PELICULAS)).toEqual([]);
+    expect(llenarMiNoche([], 300, PAUSA_ENTRE_PELICULAS)).toEqual([]);
+  });
+
+  it("puede llenar el tiempo exacto, pausas incluidas", () => {
+    // Up + Coco = 96 + 10 + 105 = 211
+    expect(llenarMiNoche([up, coco, dune], 211, PAUSA_ENTRE_PELICULAS).map((p) => p.titulo)).toEqual([
+      "Up",
+      "Coco",
+    ]);
+  });
+
+  it("la propuesta siempre cabe y no repite películas", () => {
+    for (let tiempo = 30; tiempo <= 600; tiempo += 7) {
+      const propuesta = llenarMiNoche([up, coco, her, dune], tiempo, PAUSA_ENTRE_PELICULAS);
+      const ids = propuesta.map((p) => p.tmdbId);
+      expect(new Set(ids).size).toBe(ids.length);
+      if (propuesta.length > 0) {
+        expect(
+          cabeEnTiempo(
+            tiempo,
+            propuesta.map((p) => p.duracion),
+            PAUSA_ENTRE_PELICULAS
+          ).cabe
+        ).toBe(true);
+      }
+    }
+  });
+
+  it("no hay otra combinación que ocupe más tiempo (comparado contra todas)", () => {
+    const peliculas = [up, coco, her, dune, { ...up, tmdbId: 9, titulo: "Corto", duracion: 40 }];
+    for (const tiempo of [90, 150, 240, 330, 420, 600]) {
+      let mejor = 0;
+      for (let mascara = 1; mascara < 1 << peliculas.length; mascara++) {
+        const elegidas = peliculas.filter((_, i) => mascara & (1 << i)).map((p) => p.duracion);
+        const total = duracionSesion(elegidas);
+        if (total <= tiempo) mejor = Math.max(mejor, total);
+      }
+      const propuesta = llenarMiNoche(peliculas, tiempo, PAUSA_ENTRE_PELICULAS);
+      expect(duracionSesion(propuesta.map((p) => p.duracion))).toBe(mejor);
+    }
+  });
+
+  it("nunca incluye películas sin duración ni repetidas (CA-2.5.5)", () => {
+    const rara = { ...up, tmdbId: 7, titulo: "Sin duración", duracion: 0 };
+    const propuesta = llenarMiNoche([rara, up, up, coco], 600, PAUSA_ENTRE_PELICULAS);
+    expect(propuesta.map((p) => p.titulo)).toEqual(["Up", "Coco"]);
+  });
+
+  it("arma el aviso con cuántas películas puso y cuánto ocupa", () => {
+    expect(mensajeLlenarMiNoche([up, her], PAUSA_ENTRE_PELICULAS)).toBe(
+      "Se armó una sesión de 2 películas que ocupa 3 h 52 min."
+    );
+    expect(mensajeLlenarMiNoche([up], PAUSA_ENTRE_PELICULAS)).toBe(
+      "Se armó una sesión de 1 película que ocupa 1 h 36 min."
+    );
+    expect(mensajeLlenarMiNoche([], PAUSA_ENTRE_PELICULAS)).toBe("Ninguna película cabe en ese tiempo.");
   });
 });

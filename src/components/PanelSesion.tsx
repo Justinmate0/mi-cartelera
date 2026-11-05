@@ -13,17 +13,31 @@ import {
   validarNombreSesion,
 } from "../dominio/nocheDePelicula.ts";
 
+export interface AvisoPanel {
+  tipo: "exito" | "error" | "info";
+  texto: string;
+}
+
 interface PanelSesionProps {
   sesion: PeliculaConDuracion[];
   tiempo: number | null;
   onQuitar: (tmdbId: number) => void;
   onGuardar: (nombre: string | null) => Promise<boolean>; // true si se guardó
+  onLlenar: (() => void) | null; // null mientras no hay tiempo o duraciones
   guardando: boolean;
-  aviso: { tipo: "exito" | "error"; texto: string } | null;
+  aviso: AvisoPanel | null;
 }
 
 // Panel de sesión (DESIGN.md §6.12): la sesión armada, su barra de tiempo y sus acciones.
-const PanelSesion = ({ sesion, tiempo, onQuitar, onGuardar, guardando, aviso }: PanelSesionProps) => {
+const PanelSesion = ({
+  sesion,
+  tiempo,
+  onQuitar,
+  onGuardar,
+  onLlenar,
+  guardando,
+  aviso,
+}: PanelSesionProps) => {
   const [nombre, setNombre] = useState("");
   const [errorNombre, setErrorNombre] = useState<string | null>(null);
 
@@ -143,10 +157,23 @@ const PanelSesion = ({ sesion, tiempo, onQuitar, onGuardar, guardando, aviso }: 
         <button type="submit" className="btn btn-acento w-100 mt-3" disabled={!puedeGuardar}>
           {guardando ? "Guardando..." : "Guardar sesión"}
         </button>
+        <button
+          type="button"
+          className="btn btn-outline-light w-100 mt-2"
+          onClick={() => onLlenar?.()}
+          disabled={onLlenar === null || guardando}
+        >
+          Llenar mi noche
+        </button>
         {sesion.length === 0 && <p className="form-text text-secondary mb-0">{MENSAJE_SESION_VACIA}</p>}
       </form>
 
-      {aviso && (
+      {aviso?.tipo === "info" && (
+        <p className="text-secondary mt-3 mb-0" role="status">
+          {aviso.texto}
+        </p>
+      )}
+      {aviso && aviso.tipo !== "info" && (
         <div
           className={`alert ${aviso.tipo === "exito" ? "alert-success" : "alert-danger"} py-2 mt-3 mb-0`}
           role={aviso.tipo === "exito" ? "status" : "alert"}
