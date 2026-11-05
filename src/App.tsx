@@ -18,8 +18,9 @@ import type { Seccion } from "./components/BarraUsuario.tsx";
 import Buscador from "./components/Buscador.tsx";
 import MiLista from "./components/MiLista.tsx";
 import DetalleTitulo from "./components/DetalleTitulo.tsx";
+import NocheDePelicula from "./components/NocheDePelicula.tsx";
 
-// Navegación sin router (como en la clase 12): solo estas 3 "pantallas" existen.
+// Navegación sin router (como en la clase 12): solo estas 4 "pantallas" existen.
 type Vista = Seccion | "detalle";
 
 const App = () => {
@@ -30,6 +31,9 @@ const App = () => {
   // ---- Navegación ----
   const [vista, setVista] = useState<Vista>("buscar");
   const [idSeleccionado, setIdSeleccionado] = useState<number | null>(null);
+  // La Noche de película se monta la primera vez que se abre y después solo se oculta,
+  // para no perder la sesión armada al cambiar de sección (spec E2 §5.1).
+  const [nocheAbierta, setNocheAbierta] = useState(false);
 
   // ---- Colección personal (tabla mi_lista) ----
   const [miLista, setMiLista] = useState<ItemLista[]>([]);
@@ -117,6 +121,7 @@ const App = () => {
   };
 
   const cambiarSeccion = (seccion: Seccion) => {
+    if (seccion === "noche") setNocheAbierta(true);
     setVista(seccion);
     setIdSeleccionado(null);
   };
@@ -162,6 +167,12 @@ const App = () => {
             onEliminar={manejarEliminar}
             onIrABuscar={() => cambiarSeccion("buscar")}
           />
+        )}
+
+        {nocheAbierta && (
+          <div hidden={vista !== "noche"}>
+            <NocheDePelicula />
+          </div>
         )}
 
         {vista === "detalle" && itemSeleccionado && (

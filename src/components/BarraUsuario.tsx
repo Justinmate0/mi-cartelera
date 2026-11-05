@@ -1,4 +1,4 @@
-export type Seccion = "buscar" | "mi-lista";
+export type Seccion = "buscar" | "mi-lista" | "noche";
 
 interface BarraUsuarioProps {
   email: string;
@@ -29,6 +29,14 @@ const BarraUsuario = ({ email, seccionActiva, onCambiarSeccion, onCerrarSesion }
           onClick={() => onCambiarSeccion("mi-lista")}
         >
           Mi lista
+        </button>
+        <button
+          type="button"
+          className={seccionActiva === "noche" ? "activa" : ""}
+          aria-current={seccionActiva === "noche" ? "page" : undefined}
+          onClick={() => onCambiarSeccion("noche")}
+        >
+          Noche de película
         </button>
       </nav>
     </div>

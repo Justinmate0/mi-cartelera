@@ -1,0 +1,18 @@
+/* Noche de película (E2). Solo tokens de :root (DESIGN.md §8). Spec: docs/specs/E2-noche-de-pelicula.md §5.4 */
+
+/* DH-10: el botón principal deshabilitado conserva el acento (DESIGN.md §6.1).
+   Bootstrap aplica .btn:disabled con más especificidad que .btn-acento. */
+.btn.btn-acento:disabled {
+  background: var(--acento);
+  color: var(--sobre-acento);
+  opacity: 0.65;
+}
+
+.cifra {
+  font-variant-numeric: tabular-nums;
+}
+
+.bajada-noche {
+  color: var(--texto-suave);
+  margin-bottom: 1.5rem;
+}

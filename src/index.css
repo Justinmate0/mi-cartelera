@@ -7,6 +7,20 @@
   --acento: #f5b829;      /* amarillo marquesina */
   --acento-hover: #ffcb4a;
   --peligro: #e5484d;
+
+  /* Tokens agregados en E2 (DESIGN.md §4.1). Nombran colores que E1 usa sueltos; sus reglas no cambian (DH-02). */
+  --superficie-alta: #23202b;
+  --sobre-acento: #1a1400;
+  --acento-suave: rgba(245, 184, 41, 0.2);
+  --peligro-fondo: rgba(229, 72, 77, 0.1);
+  --peligro-borde: rgba(229, 72, 77, 0.4);
+  --exito: #7fd39b;
+  --exito-borde: #3a6b4a;
+  --estado-por-ver: #d9d2f5;
+  --estado-por-ver-fondo: #3b3550;
+  --estado-vista: #b8f0cb;
+  --estado-vista-fondo: #1f5134;
+  --estrella-vacia: #4a4656;
 }
 
 body {
