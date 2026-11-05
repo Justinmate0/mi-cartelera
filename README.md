@@ -57,6 +57,16 @@ Nueva sección **Noche de película**: dices cuántos minutos tienes libres y la
 
 ![Dos cuentas: cada una ve solo sus sesiones](docs/capturas/08-sesiones-dos-cuentas.png)
 
+### Opcionales hechos
+
+- **«Llenar mi noche»:** con su historia (H2.5), sus criterios, su lugar en la spec y su función pura `llenarMiNoche` con tests, incluido uno que la compara contra todas las combinaciones posibles.
+- **Validación también en la base de datos:** `guardar_sesion` vuelve a revisar el tiempo, el nombre, que las películas estén «por ver» en tu lista y que la sesión quepa. Nadie puede insertar directo en las tablas, ni saltándose el frontend (probado en `supabase/pruebas/`).
+- **App publicada en Vercel:** https://mi-cartelera-kappa.vercel.app
+
+### Lo que se corrigió del Entregable 3
+
+El comentario fue que algunos botones y controles eran pequeños. Ahora todo control de la app mide al menos 44 × 44 px (`src/styles/controles.css`, criterio D-13 de `DESIGN.md`).
+
 ### Documentos de la épica
 
 | Documento | Qué tiene |
