@@ -1,0 +1,36 @@
+/* Tamaño mínimo de los controles (DESIGN.md §7, criterio D-13).
+   Comentario del profesor en el Entregable 3: «algunos botones y controles son pequeños».
+   Todo lo que se toca mide al menos 44 × 44 px (WCAG 2.5.5), en E1 y en E2.
+   Se carga después de index.css y noche-de-pelicula.css para no reescribir sus reglas. */
+
+.btn,
+.form-control,
+.form-select,
+.navegacion button,
+.filtros button {
+  min-height: 44px;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.form-select-sm {
+  font-size: 0.95rem;
+}
+
+/* Botones de texto («Quitar», «← Volver a mi lista»): el área táctil crece sin cambiar cómo se ven. */
+.boton-texto {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 0.25rem;
+}
+
+.estrellas-editables button {
+  min-width: 44px;
+  min-height: 44px;
+}

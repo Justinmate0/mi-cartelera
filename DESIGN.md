@@ -211,6 +211,7 @@ Una sesión guardada en «Mis sesiones», hecha con `details` y `summary` nativo
 
 - Contraste mínimo AA (4,5:1 en texto). Los tokens de la sección 4.1 ya lo cumplen.
 - Foco visible en todo control. Nunca `outline: none` sin reemplazo.
+- Todo lo que se toca mide al menos 44 × 44 px (WCAG 2.5.5): botones, campos, píldoras, estrellas y botones de texto. Lo aplica `src/styles/controles.css` en toda la app. Se agregó por el comentario del profesor al Entregable 3 («algunos botones y controles son pequeños»).
 - Toda acción se puede hacer solo con teclado, en el orden en que se lee.
 - Botones de íconos o repetidos llevan `aria-label` con el título («Eliminar Dune»).
 - `lang="es"` en `index.html`.
@@ -248,4 +249,5 @@ Una sesión guardada en «Mis sesiones», hecha con `details` y `summary` nativo
 | D-09 | A 1280px se ven el contenido y el panel lado a lado; a 390px, una columna sin scroll horizontal.                         | Navegador, modo responsive                                                                  |
 | D-10 | Una sección nueva aparece en la barra con la misma píldora activa que «Buscar» y «Mi lista».                             | Navegador                                                                                   |
 | D-11 | Un campo con error tiene `is-invalid`, el mensaje debajo, `aria-invalid="true"` y `aria-describedby`.                    | Navegador e inspector                                                                       |
-| D-12 | Las pantallas de E1 se ven igual que antes de la épica.                                                                  | Navegador, contra `docs/capturas/`                                                          |
+| D-12 | Las pantallas de E1 se ven igual que antes de la épica, salvo los arreglos registrados en `docs/AUDITORIA.md`.           | Navegador, contra `docs/capturas/`                                                          |
+| D-13 | Ningún control mide menos de 44 × 44 px.                                                                                 | Navegador: medir con el inspector, o el script de medición de `docs/VERIFICACION.md` (V-49) |

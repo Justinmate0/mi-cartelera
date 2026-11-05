@@ -20,7 +20,7 @@ La prueba simulada (la app real con Supabase y TMDB falsos, en Chromium) sirve d
 | H2.4 Mis sesiones (9)    | 1      | 8             | 0         |
 | H2.5 Llenar mi noche (5) | 2      | 3             | 0         |
 | Spec S-01 a S-20         | 17     | 3             | 0         |
-| Diseño D-01 a D-12       | 4      | 8             | 0         |
+| Diseño D-01 a D-13       | 6      | 7             | 0         |
 
 Ningún criterio está en «no cumple». El 5 de noviembre Justin probó la app publicada con sus propias películas y pasaron todos los que probó. Lo que sigue «sin verificar» tiene tests o prueba simulada, pero no se vio en la app real: casos de red lenta o caída, películas sin duración en TMDB, doble clic, reemplazar una sesión con «Llenar mi noche», teclado y 390 px.
 
@@ -101,36 +101,38 @@ Ningún criterio está en «no cumple». El 5 de noviembre Justin probó la app 
 
 ## // Diseño (DESIGN.md)
 
-| Criterio | Estado        | Evidencia                                                                                                   |
-| -------- | ------------- | ----------------------------------------------------------------------------------------------------------- |
-| D-01     | cumple        | `grep` sin hex ni `rgba` en `src/styles` y `src/components` (V-44).                                         |
-| D-02     | cumple        | Un solo `style={`: el ancho de la barra de tiempo (V-44).                                                   |
-| D-03     | cumple        | Solo `bootstrap.min.css` 5.3.3 (V-44).                                                                      |
-| D-04     | sin verificar | Código: un `btn-acento` por bloque; eliminar usa `btn-outline-danger` (V-45).                               |
-| D-05     | sin verificar | Código: «En la sesión», «No cabe en lo que queda», «Ya no está en tu lista» y los motivos son texto (V-45). |
-| D-06     | sin verificar | Código: carga con `spinner-border text-warning` y `role="status"`; errores con `EstadoError` (V-45).        |
-| D-07     | cumple        | `h1.titulo-seccion` en la pantalla; duraciones con `cifra` (revisión de código, V-45).                      |
-| D-08     | sin verificar | Simulado solo con teclado: encontró el botón amarillo sin anillo de foco, ya corregido (V-46).              |
-| D-09     | sin verificar | Simulado a 1280 y 390, sin scroll horizontal (V-47).                                                        |
-| D-10     | cumple        | Justin lo vio en la app publicada con sus películas (5 nov). Simulado: píldora activa amarilla (V-48).      |
-| D-11     | sin verificar | Código de `FormularioTiempo.tsx` con los tres atributos (V-48).                                             |
-| D-12     | sin verificar | Simulado: a 1280 px solo cambia el botón nuevo; a 390 px había un problema, ya corregido (V-43).            |
+| Criterio | Estado        | Evidencia                                                                                                                                                                                                                                                          |
+| -------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| D-01     | cumple        | `grep` sin hex ni `rgba` en `src/styles` y `src/components` (V-44).                                                                                                                                                                                                |
+| D-02     | cumple        | Un solo `style={`: el ancho de la barra de tiempo (V-44).                                                                                                                                                                                                          |
+| D-03     | cumple        | Solo `bootstrap.min.css` 5.3.3 (V-44).                                                                                                                                                                                                                             |
+| D-04     | sin verificar | Código: un `btn-acento` por bloque; eliminar usa `btn-outline-danger` (V-45).                                                                                                                                                                                      |
+| D-05     | sin verificar | Código: «En la sesión», «No cabe en lo que queda», «Ya no está en tu lista» y los motivos son texto (V-45).                                                                                                                                                        |
+| D-06     | sin verificar | Código: carga con `spinner-border text-warning` y `role="status"`; errores con `EstadoError` (V-45).                                                                                                                                                               |
+| D-07     | cumple        | `h1.titulo-seccion` en la pantalla; duraciones con `cifra` (revisión de código, V-45).                                                                                                                                                                             |
+| D-08     | sin verificar | Simulado solo con teclado: encontró el botón amarillo sin anillo de foco, ya corregido (V-46).                                                                                                                                                                     |
+| D-09     | sin verificar | Simulado a 1280 y 390, sin scroll horizontal (V-47).                                                                                                                                                                                                               |
+| D-10     | cumple        | Justin lo vio en la app publicada con sus películas (5 nov). Simulado: píldora activa amarilla (V-48).                                                                                                                                                             |
+| D-11     | sin verificar | Código de `FormularioTiempo.tsx` con los tres atributos (V-48).                                                                                                                                                                                                    |
+| D-12     | sin verificar | Simulado: a 1280 px solo cambia el botón nuevo; a 390 px había un problema, ya corregido (V-43).                                                                                                                                                                   |
+| D-13     | cumple        | Medición de todos los botones, campos y enlaces en Buscar, Mi lista, Detalle y Noche de película: antes había 28 controles distintos por debajo de 44 px (por ejemplo «Quitar» de 46 × 24, «Cerrar sesión» de 107 × 31 y las estrellas de 33 × 29); después, ninguno (V-49). |
 
 ## // Hallazgos
 
 De más grave a menos grave. Los que se corrigieron tienen su commit.
 
-1. **La barra se rompía en celular (corregido).** Con la tercera sección, a 390 px «Mi Cartelera» se partía en dos líneas y las píldoras se aplastaban. Afectaba también a Buscar y Mi lista (D-12). Se encontró comparando E1 antes y después de la épica. Corregido en `fix(NP-06)`: la navegación baja a su propia línea.
-2. **El botón principal no mostraba el foco con el teclado (corregido).** Venía de E1: `btn-acento` solo cambiaba de tono. Corregido en `fix(NP-06)` con un anillo de foco (D-08).
-3. **«Failed to fetch» en inglés al guardar sin conexión (corregido).** Corregido en `fix(NP-05)`.
-4. **`guardar_sesion` confía en la duración que manda el navegador (pendiente, aceptado).** La base revisa que cada película esté «por ver» en la lista del usuario y que la suma quepa, pero no vuelve a pedir la duración a TMDB: alguien que arme la llamada a mano podría mandar duraciones falsas de sus propias películas. Solo afecta los datos de esa misma cuenta, así que se acepta. Arreglarlo pediría una Edge Function con el token de TMDB en el servidor.
-5. **Aviso de Supabase sobre `guardar_sesion` (intencional).** El asesor de seguridad marca que un usuario autenticado puede ejecutar una función `security definer`. Es a propósito: es la única puerta para crear sesiones (S-10). La función usa `search_path = ''`, valida todo y solo escribe filas con `auth.uid()`. `anon` no la puede ejecutar. Explicado en la spec §2.3.
-6. **Avisos de Supabase que vienen de E1 (pendiente, fuera de la épica).** «Leaked password protection» está apagado, y las 4 políticas de `mi_lista` usan `auth.uid()` sin `select` (rendimiento). No se tocaron para no cambiar E1; quedan para una épica de mantenimiento. Las políticas nuevas sí usan `(select auth.uid())`.
-7. **La tabla ticket → archivos de la spec no coincidía con lo hecho (corregido en la spec).** NP-01 no tocó `tsconfig.app.json` (no hizo falta: Vite solo empaqueta lo que importa `main.tsx`); NP-03 sumó `supabase/pruebas/rls_noche_de_pelicula.sql`; NP-04 sumó `tmdbService.test.ts`; NP-07 y NP-10 tocaron `App.tsx` (para pasar la lista y los ids); y hubo dos commits de arreglo. La tabla se actualizó con una nota.
-8. **El hook de Prettier formatea el archivo entero (pendiente, aceptado).** Si el agente edita un archivo de E1 que no estaba formateado, el diff sale más grande. En la épica se evitó revirtiendo esos cambios a mano. Arreglo posible: formatear solo archivos nuevos o con `prettier --check` previo.
-9. **`.btn-en-lista` deshabilitado (menor, pendiente).** El botón «✓ En la sesión» reutiliza el estilo de E1, que tiene colores sueltos en `index.css` (deuda DH-02 del estado inicial). No se tocó para no cambiar E1.
+1. **Botones y controles pequeños (corregido).** Es lo que marcó el profesor en el Entregable 3, y seguía pasando: 28 controles distintos medían menos de 44 px de alto o de ancho, en E1 y en E2. Corregido en `fix(NP-13)` con `src/styles/controles.css`, que da a todo control al menos 44 × 44 px sin tocar las reglas de E1 (D-13).
+2. **La barra se rompía en celular (corregido).** Con la tercera sección, a 390 px «Mi Cartelera» se partía en dos líneas y las píldoras se aplastaban. Afectaba también a Buscar y Mi lista (D-12). Se encontró comparando E1 antes y después de la épica. Corregido en `fix(NP-06)`: la navegación baja a su propia línea.
+3. **El botón principal no mostraba el foco con el teclado (corregido).** Venía de E1: `btn-acento` solo cambiaba de tono. Corregido en `fix(NP-06)` con un anillo de foco (D-08).
+4. **«Failed to fetch» en inglés al guardar sin conexión (corregido).** Corregido en `fix(NP-05)`.
+5. **`guardar_sesion` confía en la duración que manda el navegador (pendiente, aceptado).** La base revisa que cada película esté «por ver» en la lista del usuario y que la suma quepa, pero no vuelve a pedir la duración a TMDB: alguien que arme la llamada a mano podría mandar duraciones falsas de sus propias películas. Solo afecta los datos de esa misma cuenta, así que se acepta. Arreglarlo pediría una Edge Function con el token de TMDB en el servidor.
+6. **Aviso de Supabase sobre `guardar_sesion` (intencional).** El asesor de seguridad marca que un usuario autenticado puede ejecutar una función `security definer`. Es a propósito: es la única puerta para crear sesiones (S-10). La función usa `search_path = ''`, valida todo y solo escribe filas con `auth.uid()`. `anon` no la puede ejecutar. Explicado en la spec §2.3.
+7. **Avisos de Supabase que vienen de E1 (pendiente, fuera de la épica).** «Leaked password protection» está apagado, y las 4 políticas de `mi_lista` usan `auth.uid()` sin `select` (rendimiento). No se tocaron para no cambiar E1; quedan para una épica de mantenimiento. Las políticas nuevas sí usan `(select auth.uid())`.
+8. **La tabla ticket → archivos de la spec no coincidía con lo hecho (corregido en la spec).** NP-01 no tocó `tsconfig.app.json` (no hizo falta: Vite solo empaqueta lo que importa `main.tsx`); NP-03 sumó `supabase/pruebas/rls_noche_de_pelicula.sql`; NP-04 sumó `tmdbService.test.ts`; NP-07 y NP-10 tocaron `App.tsx` (para pasar la lista y los ids); y hubo dos commits de arreglo. La tabla se actualizó con una nota.
+9. **El hook de Prettier formatea el archivo entero (pendiente, aceptado).** Si el agente edita un archivo de E1 que no estaba formateado, el diff sale más grande. En la épica se evitó revirtiendo esos cambios a mano. Arreglo posible: formatear solo archivos nuevos o con `prettier --check` previo.
+10. **`.btn-en-lista` deshabilitado (menor, pendiente).** El botón «✓ En la sesión» reutiliza el estilo de E1, que tiene colores sueltos en `index.css` (deuda DH-02 del estado inicial). No se tocó para no cambiar E1.
 
 ## // Lo que hizo el agente y lo que verificó Justin
 
-- **Agente:** escribió los documentos, la migración, el SQL de prueba, el código y los tests; corrió los comandos y la prueba simulada; encontró y corrigió los hallazgos 1 a 3.
+- **Agente:** escribió los documentos, la migración, el SQL de prueba, el código y los tests; corrió los comandos y la prueba simulada; encontró y corrigió los hallazgos 1 a 4.
 - **Justin:** decidió los cinco puntos abiertos, aplicó la migración en Supabase, corrió el SQL de RLS (captura 07) y probó la app publicada con dos cuentas (capturas 08 a 11). Le falta revisar la sección 7 de `docs/ESTADO-INICIAL.md`.
