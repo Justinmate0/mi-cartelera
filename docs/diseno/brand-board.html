@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Marquesina · Brand board</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Mismos tokens que el bloque :root de src/index.css (DESIGN.md §4). */
+      :root {
+        --fondo: #0e0d12;
+        --superficie: #18161f;
+        --superficie-alta: #23202b;
+        --borde: #2a2733;
+        --texto: #f2efe8;
+        --texto-suave: #a39fae;
+        --acento: #f5b829;
+        --acento-hover: #ffcb4a;
+        --sobre-acento: #1a1400;
+        --acento-suave: rgba(245, 184, 41, 0.2);
+        --peligro: #e5484d;
+        --peligro-fondo: rgba(229, 72, 77, 0.1);
+        --peligro-borde: rgba(229, 72, 77, 0.4);
+        --exito: #7fd39b;
+        --exito-borde: #3a6b4a;
+        --estado-por-ver: #d9d2f5;
+        --estado-por-ver-fondo: #3b3550;
+        --estado-vista: #b8f0cb;
+        --estado-vista-fondo: #1f5134;
+        --estrella-vacia: #4a4656;
+      }
+      body {
+        background: var(--fondo);
+        color: var(--texto);
+        font-family: "Inter", system-ui, sans-serif;
+      }
+      .bebas {
+        font-family: "Bebas Neue", "Inter", sans-serif;
+        letter-spacing: 0.04em;
+      }
+      .marca {
+        color: var(--acento);
+        font-size: 1.5rem;
+        margin: 0;
+      }
+      .titulo-seccion {
+        font-size: 2.4rem;
+        margin: 0;
+      }
+      .subtitulo {
+        font-size: 1.6rem;
+        margin: 0 0 0.75rem;
+      }
+      .suave {
+        color: var(--texto-suave);
+      }
+      .cifra {
+        font-variant-numeric: tabular-nums;
+      }
+      code {
+        color: var(--acento);
+        overflow-wrap: anywhere;
+      }
+      .banda {
+        border-top: 1px solid var(--borde);
+        padding: 2.5rem 0;
+      }
+      .cabecera {
+        padding: 3rem 0 2rem;
+        background: radial-gradient(ellipse at top, rgba(245, 184, 41, 0.12), transparent 60%), var(--fondo);
+      }
+      .cabecera h1 {
+        font-size: clamp(3rem, 9vw, 5.5rem);
+        line-height: 0.95;
+        margin: 0;
+      }
+      .muestras {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+      }
+      .muestra {
+        background: var(--superficie);
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .muestra-color {
+        height: 72px;
+        border-bottom: 1px solid var(--borde);
+      }
+      .muestra-texto {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.8rem;
+      }
+      .muestra-texto strong {
+        display: block;
+        font-size: 0.85rem;
+      }
+      .btn-acento {
+        background: var(--acento);
+        border: none;
+        color: var(--sobre-acento);
+        font-weight: 600;
+      }
+      .btn-acento:hover,
+      .btn-acento:focus-visible {
+        background: var(--acento-hover);
+        color: var(--sobre-acento);
+      }
+      .btn-acento:disabled {
+        background: var(--acento);
+        color: var(--sobre-acento);
+        opacity: 0.65;
+      }
+      .btn-en-lista {
+        background: transparent;
+        border: 1px solid var(--exito-borde);
+        color: var(--exito);
+      }
+      .btn-en-lista:disabled {
+        opacity: 1;
+      }
+      .pildoras {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+      }
+      .pildora {
+        background: var(--superficie);
+        border: 1px solid var(--borde);
+        color: var(--texto-suave);
+        border-radius: 999px;
+        padding: 0.3rem 0.85rem;
+        font-size: 0.85rem;
+      }
+      .pildora.activa {
+        background: var(--acento);
+        border-color: var(--acento);
+        color: var(--sobre-acento);
+        font-weight: 600;
+      }
+      .badge-estado {
+        display: inline-block;
+        padding: 0.2rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .badge-por-ver {
+        background: var(--estado-por-ver-fondo);
+        color: var(--estado-por-ver);
+      }
+      .badge-viendo {
+        background: var(--acento);
+        color: var(--sobre-acento);
+      }
+      .badge-vista {
+        background: var(--estado-vista-fondo);
+        color: var(--estado-vista);
+      }
+      .grilla {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 1.25rem;
+        max-width: 520px;
+      }
+      .tarjeta {
+        background: var(--superficie);
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+      }
+      .poster {
+        aspect-ratio: 2 / 3;
+        background: var(--superficie-alta);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        padding: 1rem;
+        color: var(--texto-suave);
+        font-family: "Bebas Neue", sans-serif;
+        font-size: 1.3rem;
+        position: relative;
+      }
+      .esquina {
+        position: absolute;
+        top: 0.5rem;
+        left: 0.5rem;
+      }
+      .cuerpo {
+        padding: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        gap: 0.25rem;
+      }
+      .nombre {
+        font-size: 0.95rem;
+        font-weight: 600;
+        margin: 0;
+      }
+      .meta {
+        color: var(--texto-suave);
+        font-size: 0.8rem;
+        margin: 0;
+      }
+      .llena {
+        color: var(--acento);
+      }
+      .vacia {
+        color: var(--estrella-vacia);
+      }
+      .panel {
+        background: var(--superficie);
+        border: 1px solid var(--borde);
+        border-radius: 16px;
+        padding: 1.5rem;
+      }
+      .panel .form-control {
+        background: var(--fondo);
+        border-color: var(--borde);
+        color: var(--texto);
+      }
+      .panel .form-control:focus {
+        border-color: var(--acento);
+        box-shadow: 0 0 0 0.2rem var(--acento-suave);
+      }
+      .panel .form-control.is-invalid {
+        border-color: var(--peligro);
+      }
+      .texto-validacion {
+        color: var(--peligro);
+        font-size: 0.9rem;
+        margin: 0.4rem 0 0;
+      }
+      .estado-error {
+        background: var(--peligro-fondo);
+        border: 1px solid var(--peligro-borde);
+        border-radius: 12px;
+        padding: 1.25rem;
+      }
+      .regla {
+        background: var(--superficie);
+        border: 1px solid var(--borde);
+        border-radius: 12px;
+        padding: 1rem 1.25rem;
+        height: 100%;
+      }
+      .regla h3 {
+        font-size: 1rem;
+        font-weight: 600;
+      }
+      .regla ul {
+        margin: 0;
+        padding-left: 1.1rem;
+        color: var(--texto-suave);
+      }
+    </style>
+  </head>
+  <body data-bs-theme="dark">
+    <header class="cabecera">
+      <div class="container">
+        <p class="bebas marca">Mi Cartelera</p>
+        <h1 class="bebas">Marquesina</h1>
+        <p class="suave mt-3 mb-0">
+          Brand board del sistema de diseño de Mi Cartelera Personal · v1.0 · noviembre 2026. Fuente de
+          verdad:
+          <code>DESIGN.md</code>.
+        </p>
+      </div>
+    </header>
+
+    <main class="container pb-5">
+      <section class="banda">
+        <h2 class="bebas subtitulo">Principios</h2>
+        <div class="row g-3">
+          <div class="col-md-6 col-lg">
+            <div class="regla">
+              <h3>Sala a oscuras</h3>
+              <p class="suave mb-0">Fondo casi negro y los pósters como protagonistas.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg">
+            <div class="regla">
+              <h3>Bootstrap primero</h3>
+              <p class="suave mb-0">Estructura y formularios de Bootstrap; la marca va encima.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg">
+            <div class="regla">
+              <h3>Un solo acento</h3>
+              <p class="suave mb-0">El amarillo marca lo que se puede hacer o lo que está activo.</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-lg">
+            <div class="regla">
+              <h3>Nunca solo color</h3>
+              <p class="suave mb-0">Todo estado lleva texto. El color solo refuerza.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Color</h2>
+        <div class="muestras">
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--fondo)"></div>
+            <div class="muestra-texto">
+              <strong>--fondo</strong><span class="suave">#0e0d12 · página</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--superficie)"></div>
+            <div class="muestra-texto">
+              <strong>--superficie</strong><span class="suave">#18161f · tarjetas</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--superficie-alta)"></div>
+            <div class="muestra-texto">
+              <strong>--superficie-alta</strong><span class="suave">#23202b · póster vacío</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--borde)"></div>
+            <div class="muestra-texto">
+              <strong>--borde</strong><span class="suave">#2a2733 · bordes</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--texto)"></div>
+            <div class="muestra-texto">
+              <strong>--texto</strong><span class="suave">#f2efe8 · 15,6:1</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--texto-suave)"></div>
+            <div class="muestra-texto">
+              <strong>--texto-suave</strong><span class="suave">#a39fae · 6,9:1</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--acento)"></div>
+            <div class="muestra-texto">
+              <strong>--acento</strong><span class="suave">#f5b829 · único acento</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--sobre-acento)"></div>
+            <div class="muestra-texto">
+              <strong>--sobre-acento</strong><span class="suave">#1a1400 · 10,3:1</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--peligro)"></div>
+            <div class="muestra-texto">
+              <strong>--peligro</strong><span class="suave">#e5484d · errores</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--exito)"></div>
+            <div class="muestra-texto">
+              <strong>--exito</strong><span class="suave">#7fd39b · confirmaciones</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--estado-por-ver-fondo)"></div>
+            <div class="muestra-texto">
+              <strong>--estado-por-ver-fondo</strong><span class="suave">#3b3550 · «Por ver»</span>
+            </div>
+          </div>
+          <div class="muestra">
+            <div class="muestra-color" style="background: var(--estado-vista-fondo)"></div>
+            <div class="muestra-texto">
+              <strong>--estado-vista-fondo</strong><span class="suave">#1f5134 · «Vista»</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Tipografía</h2>
+        <div class="row g-4">
+          <div class="col-md-6">
+            <p class="bebas titulo-seccion">Noche de película</p>
+            <p class="suave small mb-0">
+              Bebas Neue · 2.4rem · título de pantalla (<code>titulo-seccion</code>)
+            </p>
+          </div>
+          <div class="col-md-6">
+            <p class="mb-1">Inter 400 para el texto de la app, legible sobre fondo oscuro.</p>
+            <p class="fw-semibold mb-1">Inter 600 para nombres y botones.</p>
+            <p class="cifra mb-1">1 h 45 min · 2 h 08 min · 0 h 52 min</p>
+            <p class="suave small mb-0">Cifras con <code>tabular-nums</code> (clase <code>cifra</code>)</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Botones y píldoras</h2>
+        <div class="d-flex flex-wrap gap-2 mb-3">
+          <button type="button" class="btn btn-acento">Principal</button>
+          <button type="button" class="btn btn-outline-light">Secundario</button>
+          <button type="button" class="btn btn-outline-danger">Eliminar</button>
+          <button type="button" class="btn btn-en-lista" disabled>✓ En tu lista</button>
+          <button type="button" class="btn btn-acento" disabled>Guardando...</button>
+        </div>
+        <div class="pildoras" role="group" aria-label="Ejemplo de filtros">
+          <button type="button" class="pildora activa" aria-pressed="true">Todos (6)</button>
+          <button type="button" class="pildora" aria-pressed="false">Por ver (4)</button>
+          <button type="button" class="pildora" aria-pressed="false">Viendo (1)</button>
+          <button type="button" class="pildora" aria-pressed="false">Vista (1)</button>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Tarjeta de título e insignias</h2>
+        <div class="grilla">
+          <article class="tarjeta">
+            <div class="poster">
+              <span class="esquina"><span class="badge-estado badge-por-ver">Por ver</span></span
+              >Dune
+            </div>
+            <div class="cuerpo">
+              <h3 class="nombre">Dune</h3>
+              <p class="meta cifra">2 h 35 min</p>
+              <span aria-label="Sin calificar"><span class="vacia">★★★★★</span></span>
+            </div>
+          </article>
+          <article class="tarjeta">
+            <div class="poster">
+              <span class="esquina"><span class="badge-estado badge-viendo">Viendo</span></span
+              >Coco
+            </div>
+            <div class="cuerpo">
+              <h3 class="nombre">Coco</h3>
+              <p class="meta">Película</p>
+              <span aria-label="4 de 5"><span class="llena">★★★★</span><span class="vacia">★</span></span>
+            </div>
+          </article>
+          <article class="tarjeta">
+            <div class="poster">
+              <span class="esquina"><span class="badge-estado badge-vista">Vista</span></span
+              >Up
+            </div>
+            <div class="cuerpo">
+              <h3 class="nombre">Up</h3>
+              <p class="meta">Película</p>
+              <span aria-label="5 de 5"><span class="llena">★★★★★</span></span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Campos y estados</h2>
+        <div class="row g-4">
+          <div class="col-lg-6">
+            <div class="panel">
+              <label class="form-label fw-semibold" for="campo-ok">Campo normal</label>
+              <input id="campo-ok" class="form-control mb-3" value="120" />
+              <label class="form-label fw-semibold" for="campo-error">Campo con error</label>
+              <input
+                id="campo-error"
+                class="form-control is-invalid"
+                value="20"
+                aria-invalid="true"
+                aria-describedby="campo-error-msg"
+              />
+              <p id="campo-error-msg" class="texto-validacion">Mensaje de error debajo del campo.</p>
+            </div>
+          </div>
+          <div class="col-lg-6 d-flex flex-column gap-3">
+            <div class="d-flex align-items-center gap-2" role="status">
+              <div class="spinner-border spinner-border-sm text-warning"></div>
+              <span class="text-secondary">Cargando…</span>
+            </div>
+            <div class="estado-error" role="alert">
+              <p class="mb-3">Estado de error con su motivo.</p>
+              <button type="button" class="btn btn-outline-light btn-sm">Reintentar</button>
+            </div>
+            <div class="alert alert-success py-2 mb-0">Aviso de una acción que salió bien.</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="banda">
+        <h2 class="bebas subtitulo">Sí y no</h2>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <div class="regla">
+              <h3>Sí</h3>
+              <ul>
+                <li>Clases de Bootstrap primero, componentes propios después.</li>
+                <li>Colores solo con tokens de <code>:root</code>.</li>
+                <li>CSS de cada pantalla nueva en <code>src/styles/</code>.</li>
+                <li>Probar a 1280px y a 390px.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="regla">
+              <h3>No</h3>
+              <ul>
+                <li>Hexadecimales o <code>rgba()</code> fuera de <code>:root</code>.</li>
+                <li>Tailwind, otra librería de UI o el JavaScript de Bootstrap.</li>
+                <li>Estilos en línea, <code>--bs-*</code> o <code>!important</code>.</li>
+                <li>Cambiar cómo se ven las pantallas de E1.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </body>
+</html>
