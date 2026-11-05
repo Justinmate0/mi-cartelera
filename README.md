@@ -5,7 +5,7 @@ Aplicación web para guardar las películas y series que quieres ver, las que es
 **🔗 Demo en vivo:** https://mi-cartelera-kappa.vercel.app
 **📦 Repositorio:** https://github.com/Justinmate0/mi-cartelera
 
-> Entregable 3 — Desarrollo Web 2, USFQ · Justin Peñafiel
+> Entregables 3 y 4 — Desarrollo Web 2, USFQ · Justin Peñafiel
 
 ![Mi lista](docs/capturas/03-mi-lista.png)
 
@@ -34,6 +34,51 @@ Aplicación web para guardar las películas y series que quieres ver, las que es
 - **Publicada en Vercel**, con despliegue automático en cada push a `main`.
 - **Diseño responsive:** se adapta a celular sin desbordes horizontales.
 - **Mensajes de error en español**, traducidos desde Supabase y TMDB.
+
+---
+
+## Entregable 4: Noche de película
+
+> Desarrollo Web 2, USFQ · Justin Peñafiel · hecho con harness engineering y spec driven development.
+
+Nueva sección **Noche de película**: dices cuántos minutos tienes libres y la app te muestra cuáles de tus películas «por ver» caben, te deja armar una sesión de varias películas (con 10 minutos de pausa entre cada una), guardarla con un nombre y verla o borrarla después en **Mis sesiones**. El botón **Llenar mi noche** arma solo la combinación que más aprovecha tu tiempo.
+
+- **Regla «cabe»:** suma de duraciones + 10 min × (películas − 1) ≤ tiempo libre. Ocupar el tiempo exacto sí cabe. Vive en [`src/dominio/nocheDePelicula.ts`](src/dominio/nocheDePelicula.ts), sin React ni red, con sus tests.
+- **Duraciones:** se piden a TMDB (`/movie/{id}`, máximo 4 a la vez). Si TMDB no tiene la duración, la película sale como «no disponible» con su motivo.
+- **Datos:** tablas `sesiones` y `sesion_peliculas` con RLS (cada cuenta ve y borra solo lo suyo) y la función `guardar_sesion`, que vuelve a validar todo en la base. Migración en [`supabase/migraciones/002_noche_de_pelicula.sql`](supabase/migraciones/002_noche_de_pelicula.sql).
+
+### Documentos de la épica
+
+| Documento | Qué tiene |
+|---|---|
+| [`docs/ESTADO-INICIAL.md`](docs/ESTADO-INICIAL.md) | Cómo estaba el proyecto antes de empezar: stack, inconsistencias, riesgos y deuda. |
+| [`DESIGN.md`](DESIGN.md) y [`docs/diseno/brand-board.html`](docs/diseno/brand-board.html) | Sistema visual «Marquesina»: tokens, componentes y reglas. |
+| [`docs/prd/mi-cartelera.md`](docs/prd/mi-cartelera.md) | PRD con E1 y E2, reglas y decisiones de los puntos abiertos. |
+| [`docs/backlog/`](docs/backlog/) | Épicas, historias con criterios DADO/CUANDO/ENTONCES, refinamiento y tickets NP-01 a NP-13. |
+| [`docs/specs/E2-noche-de-pelicula.md`](docs/specs/E2-noche-de-pelicula.md) | Spec: modelo de datos, SQL, funciones, componentes, DEBE/NO DEBE y tablas de trazabilidad. |
+| [`docs/VERIFICACION.md`](docs/VERIFICACION.md) | Cada criterio con pasos, resultado esperado y obtenido. |
+| [`docs/AUDITORIA.md`](docs/AUDITORIA.md) | Cada criterio como cumple, no cumple o sin verificar, con evidencia. |
+
+### Activar la épica en tu Supabase
+
+Después del paso 2 de la instalación, abre **SQL Editor → New query**, pega [`supabase/migraciones/002_noche_de_pelicula.sql`](supabase/migraciones/002_noche_de_pelicula.sql) y presiona **Run**. Para comprobar la seguridad con dos usuarios, corre [`supabase/pruebas/rls_noche_de_pelicula.sql`](supabase/pruebas/rls_noche_de_pelicula.sql): termina con un «error» a propósito que muestra los resultados y deshace todo lo que probó.
+
+### Tests
+
+```bash
+npm test
+```
+
+Corre Vitest una vez. Prueba la regla «cabe» con sus bordes (tiempo exacto, una sola película sin pausa, película sin duración, tiempo fuera de rango), el orden, «Llenar mi noche» comparado contra todas las combinaciones posibles, y el servicio de duraciones con `fetch` simulado.
+
+### Cómo está armado el harness
+
+El proyecto está preparado para trabajar con un agente de código sin que se salga de las reglas:
+
+- **[`AGENTS.md`](AGENTS.md)** (menos de 40 líneas): stack, comandos, la regla de oro (nada de código sin spec; orden PRD → backlog → spec → tests → código → verificación; un commit por ticket), claves y arquitectura. **`CLAUDE.md`** solo lo importa con `@AGENTS.md`.
+- **Skill `/commit`** ([`.claude/skills/commit/SKILL.md`](.claude/skills/commit/SKILL.md)): arma el mensaje en formato convencional con el id del ticket, se detiene si ve `.env` o algo que parezca una clave y nunca hace push. Tiene `disable-model-invocation: true`, así que solo corre cuando la persona escribe `/commit`.
+- **Hook PostToolUse** ([`.claude/settings.json`](.claude/settings.json) y [`.claude/hooks/formatear.cjs`](.claude/hooks/formatear.cjs)): cada vez que el agente edita o crea un archivo, lo formatea con Prettier. No toca archivos fuera del proyecto ni `.env`.
+- **Permisos:** el agente no puede leer ni editar `.env` ni `.env.local`.
 
 ---
 
@@ -116,6 +161,8 @@ Abre http://localhost:5173, crea una cuenta y empieza a buscar.
 | `npm run build` | Revisa los tipos con TypeScript y genera la versión de producción en `dist/`. |
 | `npm run preview` | Sirve localmente la versión de producción. |
 | `npm run lint` | Revisa el código con oxlint. |
+| `npm test` | Corre los tests con Vitest. |
+| `npm run format` | Formatea con Prettier. |
 
 ---
 
@@ -160,16 +207,29 @@ La clave `secret` / `service_role` de Supabase **nunca** se usa en el frontend.
 
 ```
 mi-cartelera/
+├── AGENTS.md / CLAUDE.md      # Reglas para el agente (harness)
+├── DESIGN.md                  # Sistema visual
+├── .claude/                   # Skill /commit, hook de Prettier y permisos
 ├── supabase/
-│   └── schema.sql             # Tabla mi_lista, RLS y políticas
-├── docs/capturas/             # Capturas usadas en este README
+│   ├── schema.sql             # Tabla mi_lista, RLS y políticas
+│   ├── migraciones/           # 002: sesiones, RLS y guardar_sesion
+│   └── pruebas/               # Prueba SQL de RLS con dos usuarios
+├── docs/                      # Estado inicial, PRD, backlog, spec, verificación, auditoría
+│   └── capturas/              # Capturas usadas en este README
 ├── src/
+│   ├── dominio/
+│   │   └── nocheDePelicula.ts # Reglas puras de E2 (+ sus tests)
+│   ├── hooks/
+│   │   └── useDuraciones.ts   # Duraciones de TMDB con caché
+│   ├── styles/
+│   │   └── noche-de-pelicula.css
 │   ├── lib/
 │   │   └── supabaseClient.ts  # Cliente único de Supabase
 │   ├── services/              # Toda la comunicación con APIs
 │   │   ├── authService.ts     # Registro, login, logout, sesión
-│   │   ├── tmdbService.ts     # Búsqueda y detalle en TMDB
-│   │   └── miListaService.ts  # CRUD de mi_lista
+│   │   ├── tmdbService.ts     # Búsqueda, detalle y duraciones en TMDB
+│   │   ├── miListaService.ts  # CRUD de mi_lista
+│   │   └── sesionesService.ts # Guardar, listar y borrar sesiones
 │   ├── types/
 │   │   ├── catalogo.ts        # Tipos de resultados de TMDB
 │   │   └── miLista.ts         # EstadoVisualizacion, ItemLista...
@@ -185,7 +245,12 @@ mi-cartelera/
 │   │   ├── EstadoBadge.tsx
 │   │   ├── Poster.tsx
 │   │   ├── EstadoError.tsx
-│   │   └── EstadoCargaPantalla.tsx
+│   │   ├── EstadoCargaPantalla.tsx
+│   │   ├── NocheDePelicula.tsx    # Pantalla de E2
+│   │   ├── FormularioTiempo.tsx
+│   │   ├── ListaCandidatas.tsx
+│   │   ├── PanelSesion.tsx
+│   │   └── MisSesiones.tsx
 │   ├── App.tsx                # Sesión, navegación y estado de la lista
 │   ├── main.tsx
 │   └── index.css
@@ -198,11 +263,12 @@ mi-cartelera/
 ## Decisiones técnicas
 
 - **Capa de servicios:** los componentes nunca llaman directamente a Supabase ni a `fetch`. Toda la comunicación pasa por `src/services`, que devuelve datos tipados y errores ya traducidos al español.
-- **Navegación sin router:** un tipo unión `Vista = "buscar" | "mi-lista" | "detalle"` controla qué pantalla se muestra.
+- **Navegación sin router:** un tipo unión `Vista` controla qué pantalla se muestra (desde E2 incluye `"noche"`).
 - **Tipos estrictos:** uniones de TypeScript para el estado de visualización, el tipo de contenido y los estados de carga, sin usar `any`.
 - **Peticiones cancelables:** las búsquedas y la carga del detalle usan `AbortController`. Si el usuario busca de nuevo o cambia de pantalla, la respuesta anterior se descarta y no pisa a la nueva.
 - **Actualizaciones inmutables:** la lista se actualiza con `map` / `filter` / spread, y se ordena sobre una copia (`[...items].sort(...)`) para no mutar el estado.
 - **Eliminación verificada:** al eliminar se pide a Supabase que devuelva la fila borrada. Si RLS bloquea la operación (0 filas afectadas), el usuario ve un error en lugar de un falso "eliminado".
+- **Reglas de negocio aparte (E2):** los componentes no suman minutos ni comparan con el tiempo; se lo piden a `src/dominio/`, que se prueba sin navegador.
 - **Accesibilidad:** botones con `aria-label` descriptivos, estrellas como `radiogroup`, navegación con `aria-current` y estados anunciados con `role="status"` / `role="alert"`.
 
 ---
