@@ -10,6 +10,7 @@ import {
   validarTiempoDisponible,
 } from "../dominio/nocheDePelicula.ts";
 import { useDuraciones } from "../hooks/useDuraciones.ts";
+import { guardarSesion } from "../services/sesionesService.ts";
 import FormularioTiempo from "./FormularioTiempo.tsx";
 import ListaCandidatas from "./ListaCandidatas.tsx";
 import PanelSesion from "./PanelSesion.tsx";
@@ -37,6 +38,8 @@ const NocheDePelicula = ({
   // Sesión armada, en el orden en que se agregaron las películas (CA-2.2.9).
   const [sesion, setSesion] = useState<PeliculaConDuracion[]>([]);
   const [avisoAgregar, setAvisoAgregar] = useState<{ tmdbId: number; texto: string } | null>(null);
+  const [guardando, setGuardando] = useState(false);
+  const [avisoPanel, setAvisoPanel] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null);
 
   const ids = useMemo(() => peliculasPorVer.map((item) => item.tmdb_id), [peliculasPorVer]);
   const { estado, duraciones, error, reintentar } = useDuraciones(ids);
@@ -75,12 +78,46 @@ const NocheDePelicula = ({
     if (resultado.ok) {
       setSesion((actual) => [...actual, pelicula]);
       setAvisoAgregar(null);
+      setAvisoPanel(null);
     } else {
       setAvisoAgregar({ tmdbId: pelicula.tmdbId, texto: mensajeNoAgregada(resultado) });
     }
   };
 
+  // Guarda en Supabase. El botón ya está deshabilitado mientras guarda (CA-2.3.7).
+  const guardar = async (nombre: string | null): Promise<boolean> => {
+    if (tiempo === null || guardando) return false;
+    setGuardando(true);
+    setAvisoPanel(null);
+    try {
+      await guardarSesion({
+        nombre,
+        tiempoDisponible: tiempo,
+        peliculas: sesion.map((pelicula) => ({ tmdbId: pelicula.tmdbId, duracion: pelicula.duracion })),
+      });
+      setSesion([]); // CA-2.3.9: se vacía para armar otra; el tiempo se mantiene.
+      setAvisoAgregar(null);
+      setAvisoPanel({ tipo: "exito", texto: "Sesión guardada." });
+      return true;
+    } catch (err) {
+      // CA-2.3.6: la sesión armada no se pierde.
+      setAvisoPanel({
+        tipo: "error",
+        texto:
+          err instanceof TypeError
+            ? "No se pudo conectar. Revisa tu internet e intenta otra vez."
+            : err instanceof Error
+              ? err.message
+              : "No se pudo guardar la sesión.",
+      });
+      return false;
+    } finally {
+      setGuardando(false);
+    }
+  };
+
   const quitar = (tmdbId: number) => {
+    setAvisoPanel(null);
     setSesion((actual) => actual.filter((pelicula) => pelicula.tmdbId !== tmdbId));
     setAvisoAgregar(null);
   };
@@ -156,7 +193,14 @@ const NocheDePelicula = ({
           )}
         </div>
         <div className="col-lg-4">
-          <PanelSesion sesion={sesion} tiempo={tiempo} onQuitar={quitar} />
+          <PanelSesion
+            sesion={sesion}
+            tiempo={tiempo}
+            onQuitar={quitar}
+            onGuardar={guardar}
+            guardando={guardando}
+            aviso={avisoPanel}
+          />
         </div>
       </div>
     );
