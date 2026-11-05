@@ -16,3 +16,58 @@
   color: var(--texto-suave);
   margin-bottom: 1.5rem;
 }
+
+/* ---- Formulario del tiempo (Campo de formulario, DESIGN.md §6.6) ---- */
+.formulario-tiempo {
+  max-width: 520px;
+  margin-bottom: 1.5rem;
+}
+.fila-tiempo {
+  display: flex;
+  gap: 0.5rem;
+}
+.formulario-tiempo .form-control {
+  background: var(--superficie);
+  border-color: var(--borde);
+  color: var(--texto);
+}
+.formulario-tiempo .form-control:focus {
+  border-color: var(--acento);
+  box-shadow: 0 0 0 0.2rem var(--acento-suave);
+}
+.formulario-tiempo .form-control.is-invalid {
+  border-color: var(--peligro);
+}
+.fila-tiempo .btn {
+  flex-shrink: 0;
+}
+
+/* ---- Qué cabe (Tarjeta de candidata y Lista de no disponibles, DESIGN.md §6.10 y §6.11) ---- */
+.lista-sin-estilo {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.aviso-muy-largas {
+  color: var(--texto-suave);
+  margin-bottom: 1rem;
+}
+.no-disponibles {
+  margin-top: 2rem;
+}
+.subtitulo-no-disponibles {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+.no-disponibles li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem 0.75rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid var(--borde);
+}
+.motivo-no-disponible {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+}

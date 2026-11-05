@@ -143,6 +143,9 @@ const App = () => {
 
   const itemSeleccionado = miLista.find((item) => item.id === idSeleccionado);
 
+  // Noche de película: solo películas en estado «por ver» (R2.2). Las series no entran (no-alcance).
+  const peliculasPorVer = miLista.filter((item) => item.tipo_contenido === "pelicula" && item.estado === "por_ver");
+
   return (
     <>
       <BarraUsuario
@@ -171,7 +174,13 @@ const App = () => {
 
         {nocheAbierta && (
           <div hidden={vista !== "noche"}>
-            <NocheDePelicula />
+            <NocheDePelicula
+              peliculasPorVer={peliculasPorVer}
+              cargandoLista={cargandoLista}
+              errorLista={errorLista}
+              onReintentarLista={() => setRecargar((n) => n + 1)}
+              onIrABuscar={() => cambiarSeccion("buscar")}
+            />
           </div>
         )}
 
