@@ -145,6 +145,9 @@ const App = () => {
 
   // Noche de película: solo películas en estado «por ver» (R2.2). Las series no entran (no-alcance).
   const peliculasPorVer = miLista.filter((item) => item.tipo_contenido === "pelicula" && item.estado === "por_ver");
+  const idsPeliculasEnLista = new Set(
+    miLista.filter((item) => item.tipo_contenido === "pelicula").map((item) => item.tmdb_id)
+  );
 
   return (
     <>
@@ -176,6 +179,7 @@ const App = () => {
           <div hidden={vista !== "noche"}>
             <NocheDePelicula
               peliculasPorVer={peliculasPorVer}
+              idsEnLista={idsPeliculasEnLista}
               cargandoLista={cargandoLista}
               errorLista={errorLista}
               onReintentarLista={() => setRecargar((n) => n + 1)}

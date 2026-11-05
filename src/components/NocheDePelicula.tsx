@@ -14,10 +14,12 @@ import { guardarSesion } from "../services/sesionesService.ts";
 import FormularioTiempo from "./FormularioTiempo.tsx";
 import ListaCandidatas from "./ListaCandidatas.tsx";
 import PanelSesion from "./PanelSesion.tsx";
+import MisSesiones from "./MisSesiones.tsx";
 import EstadoError from "./EstadoError.tsx";
 
 interface NocheDePeliculaProps {
   peliculasPorVer: ItemLista[]; // ya filtradas por App: películas en estado «por ver» (R2.2)
+  idsEnLista: ReadonlySet<number>; // tmdb_id de todas las películas de Mi lista, para «Ya no está en tu lista»
   cargandoLista: boolean;
   errorLista: string | null;
   onReintentarLista: () => void;
@@ -28,6 +30,7 @@ interface NocheDePeliculaProps {
 // Las reglas salen de src/dominio/; las consultas, de los servicios. Aquí solo se une todo.
 const NocheDePelicula = ({
   peliculasPorVer,
+  idsEnLista,
   cargandoLista,
   errorLista,
   onReintentarLista,
@@ -40,6 +43,8 @@ const NocheDePelicula = ({
   const [avisoAgregar, setAvisoAgregar] = useState<{ tmdbId: number; texto: string } | null>(null);
   const [guardando, setGuardando] = useState(false);
   const [avisoPanel, setAvisoPanel] = useState<{ tipo: "exito" | "error"; texto: string } | null>(null);
+  // Cambia cada vez que se guarda una sesión, para que «Mis sesiones» se recargue.
+  const [versionSesiones, setVersionSesiones] = useState(0);
 
   const ids = useMemo(() => peliculasPorVer.map((item) => item.tmdb_id), [peliculasPorVer]);
   const { estado, duraciones, error, reintentar } = useDuraciones(ids);
@@ -98,6 +103,7 @@ const NocheDePelicula = ({
       setSesion([]); // CA-2.3.9: se vacía para armar otra; el tiempo se mantiene.
       setAvisoAgregar(null);
       setAvisoPanel({ tipo: "exito", texto: "Sesión guardada." });
+      setVersionSesiones((n) => n + 1);
       return true;
     } catch (err) {
       // CA-2.3.6: la sesión armada no se pierde.
@@ -213,6 +219,7 @@ const NocheDePelicula = ({
       </h1>
       <p className="bajada-noche">Elige qué ver según el tiempo que tienes.</p>
       {contenido()}
+      <MisSesiones idsEnLista={idsEnLista} recargar={versionSesiones} />
     </section>
   );
 };

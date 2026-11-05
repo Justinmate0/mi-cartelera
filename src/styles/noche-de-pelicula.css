@@ -145,3 +145,51 @@
 .formulario-guardar .form-control.is-invalid {
   border-color: var(--peligro);
 }
+
+/* ---- Mis sesiones (Tarjeta de sesión guardada, DESIGN.md §6.13) ---- */
+.mis-sesiones {
+  margin-top: 3rem;
+  max-width: 820px;
+}
+.lista-sesiones {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+.tarjeta-sesion {
+  background: var(--superficie);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+}
+.tarjeta-sesion summary {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  padding: 0.9rem 1.1rem;
+  cursor: pointer;
+  border-radius: 12px;
+}
+.tarjeta-sesion summary:focus-visible {
+  outline: 2px solid var(--acento);
+  outline-offset: 2px;
+}
+.tarjeta-sesion[open] summary {
+  border-bottom: 1px solid var(--borde);
+  border-radius: 12px 12px 0 0;
+}
+.nombre-sesion {
+  font-weight: 600;
+}
+.meta-sesion {
+  color: var(--texto-suave);
+  font-size: 0.85rem;
+}
+.detalle-sesion {
+  padding: 0.9rem 1.1rem 1.1rem;
+}
+.ya-no-esta {
+  display: block;
+  color: var(--texto-suave);
+  font-size: 0.8rem;
+  font-weight: 400;
+}
