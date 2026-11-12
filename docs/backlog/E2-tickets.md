@@ -11,7 +11,7 @@ Cada ticket se implementa en un commit con su id en el mensaje. Qué archivos to
 
 Orden sugerido: NP-01 → NP-02 → NP-03 → NP-04 → NP-05 → NP-06 → NP-07 → NP-08 → NP-09 → NP-10 → NP-11 → NP-12 → NP-13.
 
-Estado al 5 de noviembre de 2026: las casillas marcadas las revisó el agente con la evidencia de `docs/AUDITORIA.md`. Lo que solo se ve en la app real queda en «sin verificar» en la auditoría hasta que Justin llene `docs/VERIFICACION.md`.
+Estado al 5 de noviembre de 2026: las casillas marcadas las revisó el agente con la evidencia de `docs/AUDITORIA.md`. Las pruebas en la app real las hizo Justin el 5 de noviembre y están en `docs/VERIFICACION.md`; lo que no probó en la app real sigue en «sin verificar» en la auditoría.
 
 ## // NP-01 · Preparar Vitest
 
@@ -102,7 +102,7 @@ Estado al 5 de noviembre de 2026: las casillas marcadas las revisó el agente co
 - **Depende de:** NP-05, NP-06
 - **DoD:**
   - [x] Cumple CA-2.4.1 a CA-2.4.9 en prueba simulada; CA-2.4.6 probado con SQL.
-  - [ ] CA-2.4.6 demostrado con dos cuentas en el navegador (Justin).
+  - [x] CA-2.4.6 demostrado con dos cuentas en el navegador (Justin, 5 nov, captura `docs/capturas/08-sesiones-dos-cuentas.png`).
   - [x] Se actualiza sola después de guardar o borrar.
 
 ## // NP-11 · Llenar mi noche
@@ -119,7 +119,7 @@ Estado al 5 de noviembre de 2026: las casillas marcadas las revisó el agente co
 - **Depende de:** NP-07 a NP-11
 - **DoD:**
   - [x] `docs/VERIFICACION.md` con una fila por criterio: pasos, resultado esperado y resultado obtenido.
-  - [ ] Las filas de comandos las llena el agente (hecho); las de navegador, Justin (pendiente).
+  - [x] Las filas de comandos las llenó el agente; las de navegador, Justin (5 nov).
 
 ## // NP-13 · Auditoría y README
 
