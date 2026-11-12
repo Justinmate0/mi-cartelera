@@ -73,7 +73,7 @@ Se registra aquí y no se corrige en esta épica, salvo que un ticket lo diga.
 - [ ] **DH-09** Agregar tests de E1: `validarConsulta` del buscador y el orden de `MiLista` (R-04).
 - [ ] **DH-10** El botón principal deshabilitado (por ejemplo «Buscando...») se vuelve transparente: la regla `.btn:disabled` de Bootstrap le gana a `.btn-acento`, que no define su estado `:disabled`.
 
-## // 7. Revisión de Justin
+## // 7. Mi revisión
 
 Lo que confirmé o corregí después de leer el informe del agente:
 
